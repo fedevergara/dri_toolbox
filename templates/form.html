@@ -1,0 +1,98 @@
+
+{% if record %}
+    <main class="container">
+        <div class="form-section bg-body-tertiary p-5 rounded">
+        <h1>Registro enviado</h1>
+        <p class="lead">Muchas gracias por la información.</p>
+        </br>
+        <p class="lead" style="color:#4c5155;font-size:14px">{{ record }}</p>
+        </div>
+    </main>
+
+{% else %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-section bg-body-tertiary p-5 rounded">
+            <p class="h5">Datos de quien diligencia:</p></br>
+            <div class="row g-2">
+                {{ form.nombre_diligencia(class="form-control", placeholder="Nombre completo") }}
+                {{ form.correo_diligencia(class="form-control", placeholder="Correo electrónico") }}
+                {{ form.telefono_diligencia(class="form-control", placeholder="Contacto telefónico") }}
+                </br>
+            </div>
+        </div>
+        </br>
+        <div class="form-section bg-body-tertiary p-5 rounded">
+            <p class="h5">Generalidades del reporte de movilidad:</p></br>
+
+            <p class="h6">Año de la movilidad:</p>
+            <div class="form-check">
+                {% for subfield in form.año %}
+                    {{ subfield }}
+                    {{ subfield.label }}
+                    </br>
+                {% endfor %}
+            </div></br>
+            
+            <p class="h6">Semestre:</p>
+            <p class="h6" style="color:#6c757d;font-size:13px">Semestre cronológico de la movilidad. (Enero a Junio: 1 - Julio a Diciembre: 2)</p>
+            <div class="form-check">
+                {% for subfield in form.semestre %}
+                    {{ subfield }}
+                    {{ subfield.label }}
+                    </br>
+                {% endfor %}
+            </div></br>
+        
+            <p class="h6">Modalidad de la movilidad:</p>
+            <div class="form-check">
+                {% for subfield in form.modalidad %}
+                    {{ subfield }}
+                    {{ subfield.label }}
+                    </br>
+                {% endfor %}
+            </div></br>
+            
+            <p class="h6">Categoría de la movilidad:</p>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="categoria" id="categoria" value="internacional" required>
+                <label class="form-check-label" for="categoriaInternacional">Internacional</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="categoria" id="categoria" value="nacional" required>
+                <label class="form-check-label" for="categoriaNacional">Nacional</label>
+            </div></br>
+
+            <p class="h6">Categoría de la movilidad:</p>
+            <div class="form-check">
+                {% for subfield in form.categoria %}
+                    {{ subfield }}
+                    {{ subfield.label }}
+                    </br>
+                {% endfor %}
+            </div></br>
+
+        </div>
+        </br>
+
+        <!-- Sección para Internacional -->
+        <div id="seccionInternacional" class="form-section invisible">
+            <p class="h6">Categoría de la Internacional:</p>
+            <!-- Agrega aquí los campos de formulario específicos para Internacional -->
+        </div>
+
+        <!-- Sección para Nacional -->
+        <div id="seccionNacional" class="form-section hidden-section">
+            <p class="h6">Categoría de la Nacional:</p>
+            <!-- Agrega aquí los campos de formulario específicos para Nacional -->
+        </div>
+
+        </br><div class="col-12">
+            {{ form.enviar(class="btn btn-secondary") }}
+        </div>
+        
+    </form></br></br>
+
+
+{% endif %}
+    

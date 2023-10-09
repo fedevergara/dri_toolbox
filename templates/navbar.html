@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-md bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">DRI</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Inicio</a>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Informes
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Academia Glocal</a></li>
+              <li><a class="dropdown-item" href="#">Convenios próximos a vencer</a></li>
+              <li><a class="dropdown-item" href="#">Movilidad Internacional</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Herramientas
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Asistencia a eventos</a></li>
+              <li><a class="dropdown-item" href="#">Cartas de invitación</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('registro') }}">Registro de Movilidad</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link disabled" aria-disabled="true">Observatorio</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Buscar</button>
+        </form>
+      </div>
+    </div>
+  </nav>

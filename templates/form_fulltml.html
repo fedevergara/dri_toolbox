@@ -1,0 +1,67 @@
+<form method="POST">
+    <div class="bg-body-tertiary p-5 rounded">
+        <p class="h5">Datos de quien diligencia:</p></br>
+
+        <div class="row g-2">
+            <input type="text" class="form-control" placeholder="Nombre completo" aria-label="Nombre completo" id="nombre_diligencia" required>
+            <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Nombre completo" id="correo_diligencia" required>
+            <input type="tel" class="form-control" placeholder="Contacto telefónico" aria-label="Contacto telefónico" id="telefono_diligencia">
+        </div>
+    </div>
+    </br>
+    <div class="bg-body-tertiary p-4 rounded">
+        <p class="h5">Generalidades del reporte de movilidad:</p></br>
+
+        <p class="h6">Año:</p>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="año" id="2022" value="2022" required>
+            <label class="form-check-label" for="2022">2022</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="año" id="2023" value="2023" required>
+            <label class="form-check-label" for="2023">2023</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="año" id="2024" value="2024" required>
+            <label class="form-check-label" for="2024">2024</label>
+        </div></br>
+        
+        <p class="h6">Semestre:</p>
+        <p class="h6" style="color:#6c757d;font-size:13px">Semestre cronológico de la movilidad. (Enero a Junio: 1 - Julio a Diciembre: 2)</p>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="semestre" id="semestre_1" value="1" required>
+            <label class="form-check-label" for="semestre_1">1</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="semestre" id="semestre_2" value="2" required>
+            <label class="form-check-label" for="semestre_2">2</label>
+        </div></br>
+    
+        <p class="h6">Modalidad de la movilidad:</p>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="modalidad" id="modalidad_presencial" value="Presencial" required>
+            <label class="form-check-label" for="modalidad_presencial">Presencial</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="modalidad" id="modalidad_virtual" value="virtual" required>
+            <label class="form-check-label" for="modalidad_virtual">Virtual</label>
+        </div></br>
+
+        <p class="h6">Categoría de la movilidad:</p>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="categoria" id="categoria_internacional" value="Internacional" required>
+            <label class="form-check-label" for="categoria_internacional">Internacional</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="categoria" id="categoria_nacional" value="Nacional" required>
+            <label class="form-check-label" for="categoria_nacional">Nacional</label>
+        </div>
+
+
+    </div>
+
+    </br><div class="col-12">
+        {{ form.enviar(class="btn btn-primary") }}
+    </div>
+
+  </form></br></br>
