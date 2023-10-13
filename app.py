@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from utils.listas import eventos, tipos_documento, paises, vinculos
 
 # Create Flask instance
 app = Flask(__name__)
@@ -32,6 +33,7 @@ def registro_movilidad():
         }
 
     return render_template("registro_movilidad.html",
+                           paises=paises,
                            record=record)
 
 @app.route('/registro_eventos', methods=['GET', 'POST'])
@@ -61,6 +63,10 @@ def registro_eventos():
         # Aquí puedes agregar la lógica para almacenar los datos en una base de datos
 
     return render_template('registro_eventos.html',
+                           eventos=eventos,
+                           tipos_documento=tipos_documento,
+                           paises=paises,
+                           vinculos=vinculos,
                            record=record)
 
 # Errors handlers

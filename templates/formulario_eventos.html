@@ -11,64 +11,79 @@
 {% else %}
     <form action="/registro_movilidad" method="POST">
         <div class="form-section bg-body-tertiary p-5 rounded">
-            <p class="h5">EVENTOS - Datos de quien diligencia:</p></br>
+            <p class="h5">Selecciona el o los eventos a los que desea inscribirse:</p></br>
             
             <div class="row g-2">
-                <input type="text" class="form-control" placeholder="Nombre completo" aria-label="Nombre completo" id="nombre_diligencia" name="nombre_diligencia" required>
-                <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Nombre completo" id="correo_diligencia" name="correo_diligencia" required>
-                <input type="tel" class="form-control" placeholder="Contacto telefónico" aria-label="Contacto telefónico" id="telefono_diligencia" name="telefono_diligencia">
+                {% for evento in eventos %}
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">{{ evento }}</label>
+                    </div>
+                {% endfor %}
             </div>
-
         </div>
         </br>
         <div class="form-section bg-body-tertiary p-5 rounded">
-            <p class="h5">Generalidades del reporte de movilidad:</p></br>
-
-            <p class="h6">Año:</p>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="año" id="2022" value="2022" required>
-                <label class="form-check-label" for="2022">2022</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="año" id="2023" value="2023" required>
-                <label class="form-check-label" for="2023">2023</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="año" id="2024" value="2024" required>
-                <label class="form-check-label" for="2024">2024</label>
-            </div></br>
+            <p class="h5">Datos personales:</p></br>
             
-            <p class="h6">Semestre:</p>
-            <p class="h6" style="color:#6c757d;font-size:13px">Semestre cronológico de la movilidad. (Enero a Junio: 1 - Julio a Diciembre: 2)</p>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="semestre" id="semestre_1" value="1" required>
-                <label class="form-check-label" for="semestre_1">1</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="semestre" id="semestre_2" value="2" required>
-                <label class="form-check-label" for="semestre_2">2</label>
-            </div></br>
-        
-            <p class="h6">Modalidad de la movilidad:</p>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="modalidad" id="modalidad_presencial" value="Presencial" required>
-                <label class="form-check-label" for="modalidad_presencial">Presencial</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="modalidad" id="modalidad_virtual" value="virtual" required>
-                <label class="form-check-label" for="modalidad_virtual">Virtual</label>
-            </div></br>
+            <div class="row g-3">
+                <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="correo_diligencia" name="correo_diligencia" required>
+                
+                <select class="form-select form-select-md" aria-label="País" name="pais">
+                    <option selected>Tipo de documento de identidad:</option>
+                    {% for tipo in tipos_documento %}
+                    <option value="{{ tipo }}">{{ tipo }}</option>
+                    {% endfor %}
+                </select>
+                
+                <input type="text" class="form-control" placeholder="Número de documento" aria-label="Documento" name="documento" required>
+                
+                </br>
+                
+                <input type="text" class="form-control" placeholder="Nombres" aria-label="Nombres" name="nombres" required>
+                
+                <input type="text" class="form-control" placeholder="Apellidos" aria-label="Apellidos" name="apellidos" required>
+                
+                </br>
+                
+                <select class="form-select form-select-md" aria-label="País" name="pais">
+                    <option selected>País:</option>
+                        {% for pais in paises %}
+                        <option value="{{ pais }}">{{ pais }}</option>
+                        {% endfor %}
+                </select>
+                
+                <input type="text" class="form-control" placeholder="Ciudad/Municipio:" aria-label="Ciudad/Municipio" name="ciudad" required>
+               
+                </br>
+                
+                <input type="text" class="form-control" placeholder="Institución o entidad de origen:" aria-label="Institución o entidad de origen" name="entidad" required>
+                
+                <select class="form-select form-select-md" aria-label="Vínculo con la Universidad de Antioquia" name="vinculo">
+                    <option selected>Vínculo con la Universidad de Antioquia:</option>
+                        {% for vinculo in vinculos %}
+                        <option value="{{ vinculo }}">{{ vinculo }}</option>
+                        {% endfor %}
+                </select><p class="h6" style="color:#6c757d;font-size:13px">En caso de no tener vínculo alguno con la universidad de Antioquia, favor seleccionar la opción "Externo".</p>
 
-            <p class="h6">Categoría de la movilidad:</p>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="categoria" id="categoria_internacional" value="Internacional" required>
-                <label class="form-check-label" for="categoria_internacional">Internacional</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="categoria" id="categoria_nacional" value="Nacional" required>
-                <label class="form-check-label" for="categoria_nacional">Nacional</label>
-            </div>
+                <select class="form-select form-select-md" aria-label="Unidad Académica/Administrativa" name="unidad">
+                    <option selected>Unidad Académica/Administrativa:</option>
+                        {% for unidad in unidades %}
+                        <option value="{{ unidad }}">{{ unidad }}</option>
+                        {% endfor %}
+                </select>
 
+                <input type="text" class="form-control" placeholder="Programa académico/Dependencia/Grupo de investigación:" aria-label="Programa académico/Dependencia/Grupo de investigación" name="programa" required>
+                
+                <select class="form-select form-select-md" aria-label="Sede/Seccional" name="sede">
+                    <option selected>Sede/Seccional:</option>
+                        {% for sede in sedes %}
+                        <option value="{{ sede }}">{{ sede }}</option>
+                        {% endfor %}
+                </select>
+
+
+            </div>
         </div>
 
         </br><div class="col-12">
