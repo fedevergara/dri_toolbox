@@ -9,17 +9,30 @@
     </main>
 
 {% else %}
-    <form action="/registro_movilidad" method="POST">
+    {% if error %}
+    </br><div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="/registro_eventos" method="POST">
         <div class="form-section bg-body-tertiary p-5 rounded">
             <p class="h5">Selecciona el o los eventos a los que desea inscribirse:</p></br>
             
             <div class="row g-2">
                 {% for evento in eventos %}
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">{{ evento }}</label>
+                        <input class="form-check-input" type="checkbox" id="evento_{{ loop.index }}" name="eventos" value="{{ evento }}">
+                        <label class="form-check-label" for="evento_{{ loop.index }}">{{ evento }}</label>
+                        <i class="bi bi-info-circle"></i>
                     </div>
                 {% endfor %}
+            </div>
+            <div id="modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <img id="modal-image" src="" alt="Imagen del evento">
+                </div>
             </div>
         </div>
         </br>
@@ -27,16 +40,16 @@
             <p class="h5">Datos personales:</p></br>
             
             <div class="row g-3">
-                <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="correo_diligencia" name="correo_diligencia" required>
+                <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="correo" name="correo" required value="{{ record.email }}">
                 
-                <select class="form-select form-select-md" aria-label="País" name="pais">
+                <select class="form-select form-select-md" aria-label="Tipo de documento de identida" name="tipos_documento">
                     <option selected>Tipo de documento de identidad:</option>
                     {% for tipo in tipos_documento %}
                     <option value="{{ tipo }}">{{ tipo }}</option>
                     {% endfor %}
                 </select>
                 
-                <input type="text" class="form-control" placeholder="Número de documento" aria-label="Documento" name="documento" required>
+                <input type="text" class="form-control" placeholder="Número de documento" aria-label="Documento" name="documento" required value="{{ record.numero_documento_identidad }}">
                 
                 </br>
                 
@@ -73,16 +86,14 @@
                         {% endfor %}
                 </select>
 
-                <input type="text" class="form-control" placeholder="Programa académico/Dependencia/Grupo de investigación:" aria-label="Programa académico/Dependencia/Grupo de investigación" name="programa" required>
+                <input type="text" class="form-control" placeholder="Programa académico/Grupo de investigación:" aria-label="Programa académico/Grupo de investigación" name="programa">
                 
                 <select class="form-select form-select-md" aria-label="Sede/Seccional" name="sede">
-                    <option selected>Sede/Seccional:</option>
+                    <option selected>Campus de origen:</option>
                         {% for sede in sedes %}
                         <option value="{{ sede }}">{{ sede }}</option>
                         {% endfor %}
                 </select>
-
-
             </div>
         </div>
 

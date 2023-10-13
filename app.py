@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template
-from utils.listas import eventos, tipos_documento, paises, vinculos
+from utils.listas import eventos, tipos_documento, paises, vinculos, unidades, sedes
 
 # Create Flask instance
 app = Flask(__name__)
@@ -39,35 +39,59 @@ def registro_movilidad():
 @app.route('/registro_eventos', methods=['GET', 'POST'])
 def registro_eventos():
     record = None
+    error = None
 
     if request.method == 'POST':
-        evento = request.form.getlist('evento')
-        email = request.form['email']
-        tipo_documento_identidad = request.form['tipo_documento_identidad']
-        numero_documento_identidad = request.form['numero_documento_identidad']
+        evento = request.form.getlist('eventos')
+        email = request.form['correo']
+        tipo_documento = request.form['tipos_documento']
+        documento_identidad = request.form['documento']
         nombres = request.form['nombres']
         apellidos = request.form['apellidos']
         pais = request.form['pais']
         ciudad = request.form['ciudad']
+        entidad = request.form['entidad']
+        vinculo = request.form['vinculo']
+        unidad = request.form['unidad']
+        sede = request.form['sede']
 
         record = {
             "evento": evento,
             "email": email,
-            "tipo_documento_identidad": tipo_documento_identidad,
-            "numero_documento_identidad": numero_documento_identidad,
+            "tipo_documento_identidad": tipo_documento,
+            "numero_documento_identidad": documento_identidad,
             "nombres": nombres,
             "apellidos": apellidos,
             "pais": pais,
-            "ciudad": ciudad
+            "ciudad": ciudad,
+            "entidad": entidad,
+            "vinculo": vinculo,
+            "unidad": unidad,
+            "sede": sede
         }
+
+        # Realiza todas las verificaciones
+        if not evento:
+            error = "Por favor, seleccione al menos un evento."
+        elif tipo_documento not in tipos_documento:
+            error = "Por favor, seleccione un tipo de documento."
+        elif pais not in paises:
+            error = "Por favor, seleccione un país."
+        elif vinculo not in vinculos:
+            error = "Por favor, seleccione un vínculo."
+        elif unidad not in unidades:
+            error = "Por favor, seleccione una dependencia."
+        elif sede not in sedes:
+            error = "Por favor, seleccione un campus."
+
+        if error:
+            # Devuelve el formulario con el mensaje de error y los valores ingresados
+            return render_template('registro_eventos.html', eventos=eventos, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
+
         # Aquí puedes agregar la lógica para almacenar los datos en una base de datos
 
-    return render_template('registro_eventos.html',
-                           eventos=eventos,
-                           tipos_documento=tipos_documento,
-                           paises=paises,
-                           vinculos=vinculos,
-                           record=record)
+    # Renderiza el formulario sin errores
+    return render_template('registro_eventos.html', eventos=eventos, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
 
 # Errors handlers
 # Invalid URL
