@@ -60,7 +60,7 @@ def registro_eventos():
         }
         # Aquí puedes agregar la lógica para almacenar los datos en una base de datos
 
-    return render_template('formulario_eventos.html',
+    return render_template('registro_eventos.html',
                            record=record)
 
 # Errors handlers
