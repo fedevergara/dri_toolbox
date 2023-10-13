@@ -1,52 +1,25 @@
 from flask import Flask, request, render_template
-from flask_wtf import FlaskForm
-import wtforms
-from wtforms.validators import DataRequired
-
 
 # Create Flask instance
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'fede'
-
-# Create a from class
-class mobility_form(FlaskForm):
-    nombre_diligencia = wtforms.StringField("", validators=[DataRequired()])
-    correo_diligencia = wtforms.EmailField("", validators=[DataRequired()])
-    telefono_diligencia = wtforms.TelField("")
-
-    año = wtforms.RadioField("año", choices=[('2022','2022'), ('2023','2023'), ('2024','2024')], validators=[DataRequired()], render_kw={'class': 'form-check-input'})
-    semestre = wtforms.RadioField("semestre", choices=[(1, '1'), (2, '2')], validators=[DataRequired()], render_kw={'class': 'form-check-input'})
-    modalidad = wtforms.RadioField("modalidad", choices=[('presencial', 'Presencial'), ('virtual', 'Virtual')], validators=[DataRequired()], render_kw={'class': 'form-check-input'})
-    categoria = wtforms.RadioField("categoria", choices=[('internacional', 'Internacional'), ('nacional', 'Nacional')], validators=[DataRequired()], render_kw={'class': 'form-check-input'})
-
-    enviar = wtforms.SubmitField("Enviar")
 
 # Create a route
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route("/registro", methods=["GET", "POST"])
-def registro():
-    nombre_diligencia = None
-    correo_diligencia = None
-    telefono_diligencia = None
-    año = None
-    semestre = None
-    modalidad = None
-    categoria = None
-
+@app.route("/registro_movilidad", methods=["GET", "POST"])
+def registro_movilidad():
     record = None
-    form = mobility_form()
-    
-    if form.validate_on_submit():
-        nombre_diligencia = form.nombre_diligencia.data
-        correo_diligencia = form.correo_diligencia.data
-        telefono_diligencia = form.telefono_diligencia.data
-        año = form.año.data
-        semestre = form.semestre.data
-        modalidad = form.modalidad.data
-        categoria = form.categoria.data
+
+    if request.method == 'POST':
+        nombre_diligencia = request.form['nombre_diligencia']
+        correo_diligencia = request.form['correo_diligencia']
+        telefono_diligencia = request.form['telefono_diligencia']
+        año = request.form['año']
+        semestre = request.form['semestre']
+        modalidad = request.form['modalidad']
+        categoria = request.form['categoria']   
         
         record = {
             "nombre": nombre_diligencia,
@@ -57,25 +30,38 @@ def registro():
             "modalidad": modalidad,
             "categoria": categoria
         }
-        
-        form.nombre_diligencia.data = ""
-        form.correo_diligencia.data = ""
-        form.telefono_diligencia.data = ""
-        form.año.data = ""
-        form.semestre.data = ""
-        form.modalidad.data = ""
-        form.categoria.data = ""
 
-    return render_template("registro.html",
-                            nombre_diligencia=nombre_diligencia,
-                            correo_diligencia=correo_diligencia,
-                            telefono_diligencia=telefono_diligencia,
-                            año=año,
-                            semestre=semestre,
-                            modalidad=modalidad,
-                            categoria=categoria,
-                            form=form,
-                            record=record)
+    return render_template("registro_movilidad.html",
+                           record=record)
+
+@app.route('/registro_eventos', methods=['GET', 'POST'])
+def registro_eventos():
+    record = None
+
+    if request.method == 'POST':
+        evento = request.form.getlist('evento')
+        email = request.form['email']
+        tipo_documento_identidad = request.form['tipo_documento_identidad']
+        numero_documento_identidad = request.form['numero_documento_identidad']
+        nombres = request.form['nombres']
+        apellidos = request.form['apellidos']
+        pais = request.form['pais']
+        ciudad = request.form['ciudad']
+
+        record = {
+            "evento": evento,
+            "email": email,
+            "tipo_documento_identidad": tipo_documento_identidad,
+            "numero_documento_identidad": numero_documento_identidad,
+            "nombres": nombres,
+            "apellidos": apellidos,
+            "pais": pais,
+            "ciudad": ciudad
+        }
+        # Aquí puedes agregar la lógica para almacenar los datos en una base de datos
+
+    return render_template('formulario_eventos.html',
+                           record=record)
 
 # Errors handlers
 # Invalid URL
