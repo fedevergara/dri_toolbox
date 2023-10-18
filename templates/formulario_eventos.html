@@ -1,4 +1,4 @@
-{% if record %}
+{% if form_success %}
     <main class="container">
         <div class="form-section bg-body-tertiary p-5 rounded">
         <h1>Registro enviado</h1>
@@ -14,15 +14,15 @@
         {{ error }}
     </div>
     {% endif %}
-
-    <form action="/registro_eventos" method="POST">
+    <script src="/static/js/buscar_correo.js"></script>
+    <form action="/registro_eventos" method="POST" id="registro_eventos">
         <div class="form-section bg-body-tertiary p-5 rounded">
             <p class="h5">Selecciona el o los eventos a los que desea inscribirse:</p></br>
             
             <div class="row g-2">
                 {% for evento in eventos %}
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="evento_{{ loop.index }}" name="eventos" value="{{ evento }}">
+                        <input class="form-check-input" type="checkbox" id="evento_{{ loop.index }}" name="eventos" value="{{ evento }}" {% if evento in record.eventos %} checked {% endif %}>
                         <label class="form-check-label" for="evento_{{ loop.index }}">{{ evento }}</label>
                         <i class="bi bi-info-circle"></i>
                     </div>
@@ -40,58 +40,58 @@
             <p class="h5">Datos personales:</p></br>
             
             <div class="row g-3">
-                <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="correo" name="correo" required value="{{ record.email }}">
+                <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="email" name="email" required value="{{ record.email }}" onblur="buscarCorreo()">
                 
                 <select class="form-select form-select-md" aria-label="Tipo de documento de identida" name="tipos_documento">
                     <option selected>Tipo de documento de identidad:</option>
                     {% for tipo in tipos_documento %}
-                    <option value="{{ tipo }}">{{ tipo }}</option>
+                    <option value="{{ tipo }}" {% if tipo == record.tipo_documento_identidad %} selected {% endif %}>{{ tipo }}</option>
                     {% endfor %}
                 </select>
                 
-                <input type="text" class="form-control" placeholder="Número de documento" aria-label="Documento" name="documento" required value="{{ record.numero_documento_identidad }}">
+                <input type="text" class="form-control" placeholder="Número de documento" aria-label="Documento" name="documento" id="documento" required value="{{ record.numero_documento_identidad }}">
                 
                 </br>
                 
-                <input type="text" class="form-control" placeholder="Nombres" aria-label="Nombres" name="nombres" required>
+                <input type="text" class="form-control" placeholder="Nombres" aria-label="Nombres" name="nombres" id="nombres" required value="{{ record.nombres }}">
                 
-                <input type="text" class="form-control" placeholder="Apellidos" aria-label="Apellidos" name="apellidos" required>
+                <input type="text" class="form-control" placeholder="Apellidos" aria-label="Apellidos" name="apellidos" id="apellidos" required value="{{ record.apellidos }}">
                 
                 </br>
                 
-                <select class="form-select form-select-md" aria-label="País" name="pais">
+                <select class="form-select form-select-md" aria-label="País" name="pais" required value="{{ record.pais }}">
                     <option selected>País:</option>
                         {% for pais in paises %}
-                        <option value="{{ pais }}">{{ pais }}</option>
+                        <option value="{{ pais }}" {% if pais == record.pais %} selected {% endif %}>{{ pais }}</option>
                         {% endfor %}
                 </select>
                 
-                <input type="text" class="form-control" placeholder="Ciudad/Municipio:" aria-label="Ciudad/Municipio" name="ciudad" required>
+                <input type="text" class="form-control" placeholder="Ciudad/Municipio:" aria-label="Ciudad/Municipio" name="ciudad" id="ciudad" required value="{{ record.ciudad }}">
                
                 </br>
                 
-                <input type="text" class="form-control" placeholder="Institución o entidad de origen:" aria-label="Institución o entidad de origen" name="entidad" required>
+                <input type="text" class="form-control" placeholder="Institución o entidad de origen:" aria-label="Institución o entidad de origen" name="entidad" id="entidad" required value="{{ record.entidad }}">
                 
                 <select class="form-select form-select-md" aria-label="Vínculo con la Universidad de Antioquia" name="vinculo">
                     <option selected>Vínculo con la Universidad de Antioquia:</option>
                         {% for vinculo in vinculos %}
-                        <option value="{{ vinculo }}">{{ vinculo }}</option>
+                        <option value="{{ vinculo }}" {% if vinculo == record.vinculo %} selected {% endif %}>{{ vinculo }}</option>
                         {% endfor %}
                 </select><p class="h6" style="color:#6c757d;font-size:13px">En caso de no tener vínculo alguno con la universidad de Antioquia, favor seleccionar la opción "Externo".</p>
 
                 <select class="form-select form-select-md" aria-label="Unidad Académica/Administrativa" name="unidad">
                     <option selected>Unidad Académica/Administrativa:</option>
                         {% for unidad in unidades %}
-                        <option value="{{ unidad }}">{{ unidad }}</option>
+                        <option value="{{ unidad }}" {% if unidad == record.unidad %} selected {% endif %}>{{ unidad }}</option>
                         {% endfor %}
                 </select>
 
-                <input type="text" class="form-control" placeholder="Programa académico/Grupo de investigación:" aria-label="Programa académico/Grupo de investigación" name="programa">
+                <input type="text" class="form-control" placeholder="Programa académico/Grupo de investigación:" aria-label="Programa académico/Grupo de investigación" name="programa" id="programa" value="{{ record.programa }}">
                 
                 <select class="form-select form-select-md" aria-label="Sede/Seccional" name="sede">
                     <option selected>Campus de origen:</option>
                         {% for sede in sedes %}
-                        <option value="{{ sede }}">{{ sede }}</option>
+                        <option value="{{ sede }}" {% if sede == record.sede %} selected {% endif %}>{{ sede }}</option>
                         {% endfor %}
                 </select>
             </div>
@@ -104,4 +104,3 @@
     </form></br></br>
 
 {% endif %}
-    

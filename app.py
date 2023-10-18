@@ -1,8 +1,23 @@
 from flask import Flask, request, render_template
 from utils.listas import eventos, tipos_documento, paises, vinculos, unidades, sedes
+from utils.actualizacion_eventos import actualizar_eventos
+from pymongo import MongoClient, DESCENDING
+from bson.objectid import ObjectId
+from time import time
+import json
+
+db_uri="mongodb://localhost:27017/"
+db_name="international"
+collection_name="events"
+
+dbclient = MongoClient(db_uri)
+db = dbclient[db_name]
+collection = db[collection_name]
 
 # Create Flask instance
 app = Flask(__name__)
+
+eventos, ecards = actualizar_eventos()
 
 # Create a route
 @app.route("/")
@@ -23,8 +38,9 @@ def registro_movilidad():
         categoria = request.form['categoria']   
         
         record = {
+            '_id':ObjectId(),
             "nombre": nombre_diligencia,
-            "correo": correo_diligencia,
+            "email": correo_diligencia,
             "telefono": telefono_diligencia,
             "año": año,
             "semestre": semestre,
@@ -36,62 +52,96 @@ def registro_movilidad():
                            paises=paises,
                            record=record)
 
+
+@app.route('/buscar_correo')
+def buscar_correo():
+    email = request.args.get('email')
+    document = collection.find_one({'email': email},
+        sort=[( '_id', DESCENDING )])
+    print(document)
+    
+    response = json.dumps(document, default=str, ensure_ascii=False)
+    return response
+
 @app.route('/registro_eventos', methods=['GET', 'POST'])
 def registro_eventos():
     record = None
     error = None
+    form_success = False
 
     if request.method == 'POST':
+        email = request.form['email'].lower()
         evento = request.form.getlist('eventos')
-        email = request.form['correo']
-        tipo_documento = request.form['tipos_documento']
-        documento_identidad = request.form['documento']
-        nombres = request.form['nombres']
-        apellidos = request.form['apellidos']
-        pais = request.form['pais']
-        ciudad = request.form['ciudad']
-        entidad = request.form['entidad']
-        vinculo = request.form['vinculo']
-        unidad = request.form['unidad']
-        sede = request.form['sede']
 
-        record = {
-            "evento": evento,
+        # Añade una verificación para evitar registros duplicados basados en correo y eventos
+        existing_record = collection.find_one({
             "email": email,
-            "tipo_documento_identidad": tipo_documento,
-            "numero_documento_identidad": documento_identidad,
-            "nombres": nombres,
-            "apellidos": apellidos,
-            "pais": pais,
-            "ciudad": ciudad,
-            "entidad": entidad,
-            "vinculo": vinculo,
-            "unidad": unidad,
-            "sede": sede
-        }
+            "evento": {"$in": evento},
+            "numero_documento_identidad": request.form['documento']
+            })
 
-        # Realiza todas las verificaciones
-        if not evento:
-            error = "Por favor, seleccione al menos un evento."
-        elif tipo_documento not in tipos_documento:
-            error = "Por favor, seleccione un tipo de documento."
-        elif pais not in paises:
-            error = "Por favor, seleccione un país."
-        elif vinculo not in vinculos:
-            error = "Por favor, seleccione un vínculo."
-        elif unidad not in unidades:
-            error = "Por favor, seleccione una dependencia."
-        elif sede not in sedes:
-            error = "Por favor, seleccione un campus."
+        if existing_record:
+            error = "Ya existe un registro para este evento con este correo electrónico número de documento."
 
-        if error:
-            # Devuelve el formulario con el mensaje de error y los valores ingresados
-            return render_template('registro_eventos.html', eventos=eventos, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
+        else:
+            tipo_documento = request.form['tipos_documento']
+            documento_identidad = request.form['documento']
+            nombres = request.form['nombres']
+            apellidos = request.form['apellidos']
+            pais = request.form['pais']
+            ciudad = request.form['ciudad']
+            entidad = request.form['entidad']
+            vinculo = request.form['vinculo']
+            unidad = request.form['unidad']
+            programa = request.form['programa']
+            sede = request.form['sede']
 
-        # Aquí puedes agregar la lógica para almacenar los datos en una base de datos
+            record = {
+                '_id': ObjectId(),
+                "registro": int(time()),
+                "eventos": evento,
+                "email": email,
+                "tipo_documento_identidad": tipo_documento,
+                "numero_documento_identidad": documento_identidad,
+                "nombres": nombres,
+                "apellidos": apellidos,
+                "pais": pais,
+                "ciudad": ciudad,
+                "entidad": entidad,
+                "vinculo": vinculo,
+                "unidad": unidad,
+                "programa": programa,
+                "sede": sede
+            }
+
+            # Realiza todas las verificaciones
+            if not evento:
+                error = "Por favor, seleccione al menos un evento."
+            elif tipo_documento not in tipos_documento:
+                error = "Por favor, seleccione un tipo de documento."
+            elif pais not in paises:
+                error = "Por favor, seleccione un país."
+            elif vinculo not in vinculos:
+                error = "Por favor, seleccione un vínculo."
+            elif unidad not in unidades:
+                error = "Por favor, seleccione una dependencia."
+            elif sede not in sedes:
+                error = "Por favor, seleccione un campus."
+
+            if error:
+                # Devuelve el formulario con el mensaje de error y los valores ingresados
+                return render_template('registro_eventos.html', eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
+
+            else:
+                form_success = True
+
+            # Insertar el documento en la colección de MongoDB
+            collection.insert_one(record)
+            del record['_id']
+            del record['registro']
 
     # Renderiza el formulario sin errores
-    return render_template('registro_eventos.html', eventos=eventos, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
+    return render_template('registro_eventos.html', eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error, form_success=form_success)
 
 # Errors handlers
 # Invalid URL
