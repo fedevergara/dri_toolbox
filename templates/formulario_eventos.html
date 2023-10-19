@@ -39,10 +39,14 @@
         <div class="form-section bg-body-tertiary p-5 rounded">
             <p class="h5">Datos personales:</p></br>
             
-            <div class="row g-3">
+            <div class="row g-1">
                 <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="email" name="email" required value="{{ record.email }}" onblur="buscarCorreo()">
+                <p class="h6" style="color:#6c757d;font-size:13px">Si se ha registrado previamente para otros eventos, podrá importar sus datos con el correo electrónico previamente registrado.</p>
+                <p class="h6" style="color:#6c757d;font-size:13px">Por favor actualice los datos en caso ser necesario.</p>
                 
-                <select class="form-select form-select-md" aria-label="Tipo de documento de identida" name="tipos_documento">
+                </br>
+                
+                <select class="form-select form-select-md" aria-label="Tipo de documento de identida" name="tipos_documento" id="tipos_documento">
                     <option selected>Tipo de documento de identidad:</option>
                     {% for tipo in tipos_documento %}
                     <option value="{{ tipo }}" {% if tipo == record.tipo_documento_identidad %} selected {% endif %}>{{ tipo }}</option>
@@ -59,7 +63,7 @@
                 
                 </br>
                 
-                <select class="form-select form-select-md" aria-label="País" name="pais" required value="{{ record.pais }}">
+                <select class="form-select form-select-md" aria-label="País" name="pais" id="pais" required value="{{ record.pais }}">
                     <option selected>País:</option>
                         {% for pais in paises %}
                         <option value="{{ pais }}" {% if pais == record.pais %} selected {% endif %}>{{ pais }}</option>
@@ -72,14 +76,14 @@
                 
                 <input type="text" class="form-control" placeholder="Institución o entidad de origen:" aria-label="Institución o entidad de origen" name="entidad" id="entidad" required value="{{ record.entidad }}">
                 
-                <select class="form-select form-select-md" aria-label="Vínculo con la Universidad de Antioquia" name="vinculo">
+                <select class="form-select form-select-md" aria-label="Vínculo con la Universidad de Antioquia" name="vinculo" id="vinculo">
                     <option selected>Vínculo con la Universidad de Antioquia:</option>
                         {% for vinculo in vinculos %}
                         <option value="{{ vinculo }}" {% if vinculo == record.vinculo %} selected {% endif %}>{{ vinculo }}</option>
                         {% endfor %}
                 </select><p class="h6" style="color:#6c757d;font-size:13px">En caso de no tener vínculo alguno con la universidad de Antioquia, favor seleccionar la opción "Externo".</p>
 
-                <select class="form-select form-select-md" aria-label="Unidad Académica/Administrativa" name="unidad">
+                <select class="form-select form-select-md" aria-label="Unidad Académica/Administrativa" name="unidad" id="unidad">
                     <option selected>Unidad Académica/Administrativa:</option>
                         {% for unidad in unidades %}
                         <option value="{{ unidad }}" {% if unidad == record.unidad %} selected {% endif %}>{{ unidad }}</option>
@@ -88,7 +92,7 @@
 
                 <input type="text" class="form-control" placeholder="Programa académico/Grupo de investigación:" aria-label="Programa académico/Grupo de investigación" name="programa" id="programa" value="{{ record.programa }}">
                 
-                <select class="form-select form-select-md" aria-label="Sede/Seccional" name="sede">
+                <select class="form-select form-select-md" aria-label="Sede/Seccional" name="sede" id="sede">
                     <option selected>Campus de origen:</option>
                         {% for sede in sedes %}
                         <option value="{{ sede }}" {% if sede == record.sede %} selected {% endif %}>{{ sede }}</option>

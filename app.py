@@ -1,9 +1,12 @@
-from flask import Flask, request, render_template
 from utils.listas import eventos, tipos_documento, paises, vinculos, unidades, sedes
+from flask import Flask, request, render_template, redirect, url_for
 from utils.actualizacion_eventos import actualizar_eventos
 from pymongo import MongoClient, DESCENDING
+from utils.send_email import enviar_correo
+from flask_mail import Mail, Message
 from bson.objectid import ObjectId
 from time import time
+import qrcode
 import json
 
 db_uri="mongodb://localhost:27017/"
@@ -72,20 +75,22 @@ def registro_eventos():
     if request.method == 'POST':
         email = request.form['email'].lower()
         evento = request.form.getlist('eventos')
+        documento_identidad = request.form['documento']
+        print(email, evento, documento_identidad)
 
         # Añade una verificación para evitar registros duplicados basados en correo y eventos
         existing_record = collection.find_one({
             "email": email,
-            "evento": {"$in": evento},
-            "numero_documento_identidad": request.form['documento']
+            "eventos": {"$in": evento},
+            "numero_documento_identidad": documento_identidad
             })
+        print(existing_record)
 
         if existing_record:
-            error = "Ya existe un registro para este evento con este correo electrónico número de documento."
+            error = "Ya existe un registro para el/los eventos seleccionados con este correo electrónico y número de documento."
 
         else:
             tipo_documento = request.form['tipos_documento']
-            documento_identidad = request.form['documento']
             nombres = request.form['nombres']
             apellidos = request.form['apellidos']
             pais = request.form['pais']
@@ -139,6 +144,31 @@ def registro_eventos():
             collection.insert_one(record)
             del record['_id']
             del record['registro']
+
+    
+    # Enviar correo electrónico con el código QR
+    if form_success:
+        dehydrated_record =  {
+            "email": record['email'],
+            "numero_documento_identidad": record['numero_documento_identidad'],
+            "nombres": record['nombres'],
+            "apellidos": record['apellidos']
+        }
+
+        # Genera el código QR
+        QR =  record['email'].replace('.','') + '.png'
+        PATH = "./images/QRs/"
+
+        img = qrcode.make(dehydrated_record)
+        img.save(PATH+QR)
+
+        try:
+            # Enviar correo electrónico con el código QR
+            qr_url = PATH + QR
+            #enviar_correo(record['email'], f"Registro exitoso De País en País - {dehydrated_record['email']}", dehydrated_record, qr_url, record["eventos"])
+        except Exception as e:
+            print("Error al enviar el correo electrónico:", e)
+        
 
     # Renderiza el formulario sin errores
     return render_template('registro_eventos.html', eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error, form_success=form_success)

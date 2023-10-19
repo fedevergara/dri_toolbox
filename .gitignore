@@ -12,6 +12,9 @@ config.py
 # Images
 images/
 
+# Auth
+pickle/
+
 # Distribution / packaging
 .Python
 build/
