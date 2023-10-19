@@ -19,6 +19,20 @@
         <div class="form-section bg-body-tertiary p-5 rounded">
             <p class="h5">Selecciona el o los eventos a los que desea inscribirse:</p></br>
             
+            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck1">Martes 14</label>
+              
+                <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck2">Miércoles 15</label>
+              
+                <input type="checkbox" class="btn-check" id="btncheck3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck3">Jueves 16</label>
+
+                <input type="checkbox" class="btn-check" id="btncheck4" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btncheck4">Viernes 17</label>
+            </div></br></br>
+
             <div class="row g-2">
                 {% for evento in eventos %}
                     <div class="form-check form-switch">

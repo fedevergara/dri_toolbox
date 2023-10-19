@@ -38,14 +38,30 @@ else:
 
 def actualizar_eventos():
 # Importa la lista de eventos
-    eventos, ecards = get_eventos()
+    dias, eventos, ecards = get_eventos()
 
     def descarga_eventos(HEADERS):
         url = URL + "me/drive/items/01E3F34DQXJK3ATV6QJFHKNUH6HAI6UFPJ/workbook/tables('1')/rows"
         try:
             r = requests.get(url, headers=HEADERS)
             r.raise_for_status()  # Genera una excepción si la solicitud no fue exitosa
+            
+            events_data = r.json().get('value', [])
+            events_names = []
+            events_ecards = []
+            events_days = []
 
+            for event in events_data:
+                event_reg = event['values'][0]
+                event_day = event_reg[0]
+                event_name = event_reg[1]
+                event_ecard = event_reg[2]
+                
+                events_days.append(event_day)
+                events_names.append(event_name)
+                events_ecards.append(event_ecard)
+                
+            '''
             events_names = []
             events_ecards = []
             for event in r.json().get('value', []):
@@ -53,9 +69,9 @@ def actualizar_eventos():
                 event_name = event_reg[0]
                 event_ecard = event_reg[1]
                 events_names.append(event_name)
-                events_ecards.append(event_ecard)
+                events_ecards.append(event_ecard)'''
                 
-            return events_names, events_ecards
+            return events_days, events_names, events_ecards
 
         except requests.exceptions.RequestException as e:
             print("Error en la solicitud:", e)
@@ -89,18 +105,22 @@ def actualizar_eventos():
             print("Error inesperado:", e)
     
     # Descarga los eventos de la hoja de cálculo
-    nuevos_eventos, ecards = descarga_eventos(HEADERS)
+    nuevos_dias, nuevos_eventos, ecards = descarga_eventos(HEADERS)
     # Descarga las eCards
     descarga_ecards(HEADERS)
 
     # Modifica la lista de eventos
+    dias.extend(nuevos_dias)
     eventos.extend(nuevos_eventos)
+    ecards.extend(ecards)
 
     # Guarda la lista actualizada en el módulo "eventos"
     from utils.listas import eventos as eventos_originales
     from utils.listas import ecards as ecards_originales
+    from utils.listas import dias as dias_originales
 
+    dias_originales[:] = dias
     eventos_originales[:] = eventos
     ecards_originales[:] = ecards
 
-    return eventos, ecards
+    return dias, eventos, ecards

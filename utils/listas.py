@@ -1,9 +1,10 @@
 # listas.py
+dias = []
 eventos = []
 ecards = []
 
 def get_eventos():
-    return eventos, ecards
+    return dias, eventos, ecards
 
 tipos_documento = ["Tarjeta de Identidad", "Cédula de Ciudadanía", "Pasaporte", "Documento Extranjero", "Cédula de extranjería"]
 paises = ["Argentina", "Brasil", "Chile", "Colombia", "México", "Perú", "España", "Estados Unidos", "Canadá"]

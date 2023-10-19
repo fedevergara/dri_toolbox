@@ -20,7 +20,8 @@ collection = db[collection_name]
 # Create Flask instance
 app = Flask(__name__)
 
-eventos, ecards = actualizar_eventos()
+dias, eventos, ecards = actualizar_eventos()
+print(dias, eventos, ecards)
 
 # Create a route
 @app.route("/")
@@ -61,7 +62,6 @@ def buscar_correo():
     email = request.args.get('email')
     document = collection.find_one({'email': email},
         sort=[( '_id', DESCENDING )])
-    print(document)
     
     response = json.dumps(document, default=str, ensure_ascii=False)
     return response
@@ -76,7 +76,6 @@ def registro_eventos():
         email = request.form['email'].lower()
         evento = request.form.getlist('eventos')
         documento_identidad = request.form['documento']
-        print(email, evento, documento_identidad)
 
         # Añade una verificación para evitar registros duplicados basados en correo y eventos
         existing_record = collection.find_one({
@@ -84,7 +83,6 @@ def registro_eventos():
             "eventos": {"$in": evento},
             "numero_documento_identidad": documento_identidad
             })
-        print(existing_record)
 
         if existing_record:
             error = "Ya existe un registro para el/los eventos seleccionados con este correo electrónico y número de documento."
@@ -135,7 +133,7 @@ def registro_eventos():
 
             if error:
                 # Devuelve el formulario con el mensaje de error y los valores ingresados
-                return render_template('registro_eventos.html', eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
+                return render_template('registro_eventos.html', dias=dias, eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
 
             else:
                 form_success = True
@@ -154,12 +152,12 @@ def registro_eventos():
             "nombres": record['nombres'],
             "apellidos": record['apellidos']
         }
-
+        print(dehydrated_record)
         # Genera el código QR
         QR =  record['email'].replace('.','') + '.png'
         PATH = "./images/QRs/"
 
-        img = qrcode.make(dehydrated_record)
+        img = qrcode.make(str(dehydrated_record))
         img.save(PATH+QR)
 
         try:
@@ -171,7 +169,7 @@ def registro_eventos():
         
 
     # Renderiza el formulario sin errores
-    return render_template('registro_eventos.html', eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error, form_success=form_success)
+    return render_template('registro_eventos.html', dias=dias, eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error, form_success=form_success)
 
 # Errors handlers
 # Invalid URL
