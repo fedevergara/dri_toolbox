@@ -53,8 +53,8 @@ def actualizar_eventos():
 
             for event in events_data:
                 event_reg = event['values'][0]
-                event_day = event_reg[0]
-                event_name = event_reg[1]
+                event_day = event_reg[0].strip()
+                event_name = event_reg[1].strip()
                 event_ecard = event_reg[2]
                 
                 events_days.append(event_day)
@@ -123,4 +123,12 @@ def actualizar_eventos():
     eventos_originales[:] = eventos
     ecards_originales[:] = ecards
 
-    return dias, eventos, ecards
+    registros_eventos = []
+    for i in range(len(dias)):
+        registros_eventos.append({
+            "dia": dias[i],
+            "evento": eventos[i],
+            "ecard": ecards[i]
+        })
+
+    return registros_eventos

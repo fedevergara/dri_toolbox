@@ -1,10 +1,10 @@
-function buscarCorreo() {
+function BuscarCorreo() {
     var email = document.getElementById("email").value; // Obtener el valor del campo de correo electrónico
   
     // Crear una solicitud AJAX para buscar el correo electrónico en el servidor
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/buscar_correo?email=" + email, true);
-  
+
     // Definir una función que maneja la respuesta de la solicitud
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && xhr.status === 200) {

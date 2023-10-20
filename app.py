@@ -1,5 +1,5 @@
-from utils.listas import eventos, tipos_documento, paises, vinculos, unidades, sedes
-from flask import Flask, request, render_template, redirect, url_for
+from utils.listas import tipos_documento, paises, vinculos, unidades, sedes
+from flask import Flask, request, render_template, jsonify
 from utils.actualizacion_eventos import actualizar_eventos
 from pymongo import MongoClient, DESCENDING
 from utils.send_email import enviar_correo
@@ -20,8 +20,7 @@ collection = db[collection_name]
 # Create Flask instance
 app = Flask(__name__)
 
-dias, eventos, ecards = actualizar_eventos()
-print(dias, eventos, ecards)
+registros_eventos = actualizar_eventos()
 
 # Create a route
 @app.route("/")
@@ -65,6 +64,21 @@ def buscar_correo():
     
     response = json.dumps(document, default=str, ensure_ascii=False)
     return response
+
+@app.route('/filtrar_eventos')
+def filtrar_eventos():
+    parametro = request.args.get('dia')  # Cambia 'dia' a 'valor'
+    print(parametro)
+    response = {"día": parametro}
+
+    return response
+    
+    #dia_seleccionado = request.form.get('dia')
+    
+    #eventos_filtrados = [evento for evento in registros_eventos if evento['dia'] == dia_seleccionado]
+    #response = json.dumps(document, default=str, ensure_ascii=False)
+    #response = {"día": dia}
+    #return response
 
 @app.route('/registro_eventos', methods=['GET', 'POST'])
 def registro_eventos():
@@ -133,7 +147,7 @@ def registro_eventos():
 
             if error:
                 # Devuelve el formulario con el mensaje de error y los valores ingresados
-                return render_template('registro_eventos.html', dias=dias, eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
+                return render_template('registro_eventos.html', eventos=registros_eventos, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
 
             else:
                 form_success = True
@@ -152,7 +166,7 @@ def registro_eventos():
             "nombres": record['nombres'],
             "apellidos": record['apellidos']
         }
-        print(dehydrated_record)
+
         # Genera el código QR
         QR =  record['email'].replace('.','') + '.png'
         PATH = "./images/QRs/"
@@ -169,7 +183,7 @@ def registro_eventos():
         
 
     # Renderiza el formulario sin errores
-    return render_template('registro_eventos.html', dias=dias, eventos=eventos, ecards=ecards, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error, form_success=form_success)
+    return render_template('registro_eventos.html', eventos=registros_eventos, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error, form_success=form_success)
 
 # Errors handlers
 # Invalid URL
