@@ -15,9 +15,15 @@
     </div>
     {% endif %}
     
-    <form action="/registro_eventos" method="POST" id="registro_eventos">
+    <form action="/registro_eventos" method="POST" id="registro_eventos"> 
         <div class="form-section bg-body-tertiary p-5 rounded">
-            <p class="h5">Selecciona el o los eventos a los que desea inscribirse:</p></br>
+            </br>
+            {% include "eventos.html" %}
+            </br>
+        </div></br>
+
+        <div class="form-section bg-body-tertiary p-5 rounded">
+            <p class="h6">Selecciona el o los eventos a los que desea inscribirse:</p></br>
             
             <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
                 <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
@@ -32,17 +38,9 @@
                 <input type="checkbox" class="btn-check" id="btncheck4" autocomplete="off">
                 <label class="btn btn-outline-primary" for="btncheck4">Viernes 17</label>
             </div></br></br>
-
-            <div class="row g-2" id="eventos-container">
-                {% for evento in eventos %}
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="evento_{{ loop.index }}" name="eventos" value="{{ evento['dia'] + ' - ' + evento['evento'] }}" {% if evento in record.eventos %} checked {% endif %}>
-                        <label class="form-check-label" for="evento_{{ loop.index }}">{{ evento['evento'] }}</label>
-                        <i class="bi bi-info-circle"></i>
-                    </div>
-                {% endfor %}
-            </div>
-
+            
+            <div id="eventos-container"></div>
+            
             <div id="modal" class="modal">
                 <div class="modal-content">
                     <span class="close-modal">&times;</span>
@@ -52,7 +50,7 @@
         </div>
         </br>
         <div class="form-section bg-body-tertiary p-5 rounded">
-            <p class="h5">Datos personales:</p></br>
+            <p class="h6">Datos personales:</p></br>
             
             <div class="row g-1">
                 <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="email" name="email" required value="{{ record.email }}" onblur="BuscarCorreo()">

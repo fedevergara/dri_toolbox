@@ -3,7 +3,6 @@ from flask import Flask, request, render_template, jsonify
 from utils.actualizacion_eventos import actualizar_eventos
 from pymongo import MongoClient, DESCENDING
 from utils.send_email import enviar_correo
-from flask_mail import Mail, Message
 from bson.objectid import ObjectId
 from time import time
 import qrcode
@@ -23,7 +22,7 @@ app = Flask(__name__)
 registros_eventos = actualizar_eventos()
 
 # Create a route
-@app.route("/")
+@app.route("/inicio")
 def index():
     return render_template("index.html")
 
@@ -68,14 +67,28 @@ def buscar_correo():
 @app.route('/filtrar_eventos')
 def filtrar_eventos():
     parametro = request.args.get('dia')  # Cambia 'dia' a 'valor'
-    print(parametro)
-    response = {"día": parametro}
 
-    return response
+    # Separa el valor en 'accion' y 'labelText'
+    accion, labelText = parametro.split('-')
+
+    # Realiza acciones basadas en 'accion' y 'labelText'
+    if accion == 'add':
+        # Realiza acciones para añadir el elemento
+        dia_seleccionado = labelText
+        eventos_filtrados = [evento for evento in registros_eventos if dia_seleccionado in evento['dia']]
+    elif accion == 'del':
+        # Realiza acciones para eliminar el elemento
+        dia_seleccionado = labelText
+        eventos_filtrados = [evento for evento in registros_eventos if dia_seleccionado not in evento['dia']]
+
+    response = json.dumps(eventos_filtrados, default=str, ensure_ascii=False)
+
+    print(response)
+
+    return render_template('registro_eventos.html', eventos=response, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=None)
     
-    #dia_seleccionado = request.form.get('dia')
     
-    #eventos_filtrados = [evento for evento in registros_eventos if evento['dia'] == dia_seleccionado]
+    
     #response = json.dumps(document, default=str, ensure_ascii=False)
     #response = {"día": dia}
     #return response
