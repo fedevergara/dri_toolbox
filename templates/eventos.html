@@ -13,11 +13,11 @@
             <div class="form-check form-switch">
                 {% for dia, eventos_dia in eventos.items() %}
                     </br>
-                    <h5 id="list-item-{{ loop.index }}">{{ dia }}:</h5>
+                    <h6 id="list-item-{{ loop.index }}">{{ dia }}:</h6>
                     {% for evento in eventos_dia %}
                         <div class="elemento-evento">
-                            <input class="form-check-input" type="checkbox" id="evento_{{ evento.ecard }}" name="eventos" value="{{ evento.evento }}" {% if evento.evento in record.eventos %} checked {% endif %}>
-                            <label class="form-check-label" for="evento_{{ evento.ecard }}">{{ evento.evento }}</label>
+                            <input class="form-check-input" style="color:#4c5155;font-size:14px" type="checkbox" id="evento_{{ loop.index }}" name="eventos" value="{{ evento.evento }}" {% if evento.evento in record.eventos %} checked {% endif %}>
+                            <label class="form-check-label" style="color:#4c5155;font-size:14px" for="evento_{{ loop.index }}">{{ evento.evento }}</label>
                             <i class="bi bi-info-circle"></i>
                         </div>
                         {% endfor %}

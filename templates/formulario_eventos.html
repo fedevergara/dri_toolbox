@@ -16,13 +16,14 @@
     {% endif %}
     
     <form action="/registro_eventos" method="POST" id="registro_eventos"> 
-        <div class="form-section bg-body-tertiary p-5 rounded">
-            <p class="h6">Selecciona el/los eventos a los que desea inscribirse:</p></br>
+        
+        <div class="form-section bg-body-tertiary p-4 rounded">
+            <p class="h5">Selecciona el/los eventos a los que desea inscribirse:</p></br>
             {% include "eventos.html" %}
         </div>
         </br>
-        <div class="form-section bg-body-tertiary p-5 rounded">
-            <p class="h6">Datos personales:</p></br>
+        <div class="form-section bg-body-tertiary p-4 rounded">
+            <p class="h5">Datos personales:</p></br>
             
             <div class="row g-1">
                 <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="email" name="email" required value="{{ record.email }}" onblur="BuscarCorreo()">

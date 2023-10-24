@@ -125,7 +125,8 @@ def registro_eventos():
                 "vinculo": vinculo,
                 "unidad": unidad,
                 "programa": programa,
-                "sede": sede
+                "sede": sede,
+                "qr": ""
             }
 
             # Realiza todas las verificaciones
@@ -158,10 +159,6 @@ def registro_eventos():
             else:
                 form_success = True
 
-            # Insertar el documento en la colección de MongoDB
-            collection.insert_one(record)
-            del record['_id']
-            del record['registro']
 
     # Enviar correo electrónico con el código QR
     if form_success:
@@ -178,6 +175,14 @@ def registro_eventos():
 
         img = qrcode.make(str(dehydrated_record))
         img.save(PATH + QR)
+
+        # Insertar el documento en la colección de MongoDB
+        record['qr'] = QR
+        collection.insert_one(record)
+        
+        del record['_id']
+        del record['registro']
+        del record['qr']
 
         try:
             # Enviar correo electrónico con el código QR
@@ -205,15 +210,15 @@ def registro_eventos():
 
 
 @app.errorhandler(404)
-def page_not_found():
-    return render_template("404.html"), 404
+def page_not_found(e):
+    return render_template("404.html"), 404, e
 
 # Internal server error
 
 
 @app.errorhandler(500)
-def internal_server_error():
-    return render_template("505.html"), 500
+def internal_server_error(e):
+    return render_template("505.html"), 500, e
 
 
 if __name__ == "__main__":

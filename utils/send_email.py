@@ -58,17 +58,17 @@ def enviar_correo(enviar_a, asunto, registro, qr_url, eventos):
 
     mimeMessage = MIMEMultipart()
 
+    _eventos = ""
+
     if registro:
-        eventos = eventos
-        html = """
+        for evento in eventos:
+            _eventos = eventos + f"<li>{evento}</li>"
+    
+    html = f"""
         <html>
         <body>
             <p>Gracias por registrarse en los eventos: </p>
-            {% for evento in eventos %}
-                <div>
-                    <p>{{ evento }}</p>
-                </div>
-            {% endfor %}
+            {_eventos}
         </body>
         </html>
         """
