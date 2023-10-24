@@ -1,0 +1,46 @@
+{% extends "base_clean.html" %}
+
+{% block content %}
+
+<main class="container">
+    <div class="contenedor">
+        <img src="/static/banner_sm.png" class="img-fluid" alt="Banner">
+    </div>
+
+    <div class="bg-body-tertiary p-3 rounded">
+        Registros de asistencias a Eventos DRI 2023 - Presenciales.
+    </div>
+
+    <button id="activar-camara">Activar Cámara</button>
+    <video id="camara" autoplay="true" style="display:none;"></video>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.3.3/dist/jsQR.min.js"></script>
+    <script>
+        document.getElementById('activar-camara').addEventListener('click', function () {
+            // Acceder a la cámara
+            navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+                var video = document.getElementById('camara');
+                video.srcObject = stream;
+
+                video.onloadedmetadata = function (e) {
+                    video.play();
+                    // Capturar el QR
+                    var canvas = document.createElement('canvas');
+                    var context = canvas.getContext('2d');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    var code = jsQR(imageData.data, canvas.width, canvas.height);
+                    if (code) {
+                        alert('Código QR capturado: ' + code.data);
+                        // Aquí puedes enviar la información a tu servidor Flask para su procesamiento
+                    }
+                };
+            }).catch(function (error) {
+                console.error('Error al acceder a la cámara: ' + error);
+            });
+        });
+    </script>
+</main>
+
+{% endblock %}

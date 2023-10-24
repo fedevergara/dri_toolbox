@@ -4,6 +4,7 @@ from utils.actualizacion_eventos import actualizar_eventos
 from pymongo import MongoClient, DESCENDING
 from utils.send_email import enviar_correo
 from bson.objectid import ObjectId
+from config import CONTRASEÑA
 from time import time
 import qrcode
 import json
@@ -11,10 +12,12 @@ import json
 db_uri = "mongodb://localhost:27017/"
 db_name = "international"
 collection_name = "events"
+assistants = "assistants"
 
 dbclient = MongoClient(db_uri)
 db = dbclient[db_name]
 collection = db[collection_name]
+collection_assistants = db[assistants]
 
 # Create Flask instance
 app = Flask(__name__)
@@ -33,7 +36,7 @@ for evento in registros_eventos:
 # Create a route
 
 
-@app.route("/inicio")
+@app.route("/")
 def index():
     return render_template("index.html")
 
@@ -205,21 +208,44 @@ def registro_eventos():
         form_success=form_success
     )
 
+
+@app.route('/registro_asistencia', methods=['GET', 'POST'])
+def registro_asistencia():
+    if request.method == 'POST':
+        if request.form['password'] == CONTRASEÑA:
+            # Accede a la cámara y captura información del QR (implementación necesaria)
+            # Verifica y almacena el registro en MongoDB
+            registro = {"dato": "informacion_del_qr"}
+            if collection_assistants.find_one(registro) is None:
+                collection_assistants.insert_one(registro)
+                mensaje = "Registro exitoso."
+                return render_template("registro_asistencia.html", mensaje=mensaje)
+            else:
+                mensaje = "Ya se ha registrado la asistencia."
+                return render_template("registro_asistencia.html", mensaje=mensaje)
+        else:
+            error = "Contraseña incorrecta. Inténtalo de nuevo."
+            return render_template("registro_asistencia.html", error=error)
+    
+    return render_template("registro_asistencia.html")
+
+
 # Errors handlers
 # Invalid URL
 
-
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template("404.html"), 404, e
+    print(e)
+    return render_template("404.html"), 404
 
 # Internal server error
 
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template("505.html"), 500, e
+    print(e)
+    return render_template("505.html"), 500
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=8001, debug=True)

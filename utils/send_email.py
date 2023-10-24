@@ -61,8 +61,11 @@ def enviar_correo(enviar_a, asunto, registro, qr_url, eventos):
     _eventos = ""
 
     if registro:
-        for evento in eventos:
-            _eventos = eventos + f"<li>{evento}</li>"
+        for i, evento in enumerate(eventos):
+            if i == 0:
+                _eventos = evento
+            else:
+                _eventos = _eventos + ", " + evento
     
     html = f"""
         <html>
