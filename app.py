@@ -1,5 +1,5 @@
 from utils.listas import tipos_documento, paises, vinculos, unidades, sedes
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template
 from utils.actualizacion_eventos import actualizar_eventos
 from pymongo import MongoClient, DESCENDING
 from utils.send_email import enviar_correo
@@ -8,9 +8,9 @@ from time import time
 import qrcode
 import json
 
-db_uri="mongodb://localhost:27017/"
-db_name="international"
-collection_name="events"
+db_uri = "mongodb://localhost:27017/"
+db_name = "international"
+collection_name = "events"
 
 dbclient = MongoClient(db_uri)
 db = dbclient[db_name]
@@ -21,10 +21,22 @@ app = Flask(__name__)
 
 registros_eventos = actualizar_eventos()
 
+eventos_por_dia = {}
+
+for evento in registros_eventos:
+    dia = evento['dia']
+    if dia in eventos_por_dia:
+        eventos_por_dia[dia].append(evento)
+    else:
+        eventos_por_dia[dia] = [evento]
+
 # Create a route
+
+
 @app.route("/inicio")
 def index():
     return render_template("index.html")
+
 
 @app.route("/registro_movilidad", methods=["GET", "POST"])
 def registro_movilidad():
@@ -37,10 +49,10 @@ def registro_movilidad():
         año = request.form['año']
         semestre = request.form['semestre']
         modalidad = request.form['modalidad']
-        categoria = request.form['categoria']   
-        
+        categoria = request.form['categoria']
+
         record = {
-            '_id':ObjectId(),
+            '_id': ObjectId(),
             "nombre": nombre_diligencia,
             "email": correo_diligencia,
             "telefono": telefono_diligencia,
@@ -59,39 +71,11 @@ def registro_movilidad():
 def buscar_correo():
     email = request.args.get('email')
     document = collection.find_one({'email': email},
-        sort=[( '_id', DESCENDING )])
-    
+                                   sort=[('_id', DESCENDING)])
+
     response = json.dumps(document, default=str, ensure_ascii=False)
     return response
 
-@app.route('/filtrar_eventos')
-def filtrar_eventos():
-    parametro = request.args.get('dia')  # Cambia 'dia' a 'valor'
-
-    # Separa el valor en 'accion' y 'labelText'
-    accion, labelText = parametro.split('-')
-
-    # Realiza acciones basadas en 'accion' y 'labelText'
-    if accion == 'add':
-        # Realiza acciones para añadir el elemento
-        dia_seleccionado = labelText
-        eventos_filtrados = [evento for evento in registros_eventos if dia_seleccionado in evento['dia']]
-    elif accion == 'del':
-        # Realiza acciones para eliminar el elemento
-        dia_seleccionado = labelText
-        eventos_filtrados = [evento for evento in registros_eventos if dia_seleccionado not in evento['dia']]
-
-    response = json.dumps(eventos_filtrados, default=str, ensure_ascii=False)
-
-    print(response)
-
-    return render_template('registro_eventos.html', eventos=response, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=None)
-    
-    
-    
-    #response = json.dumps(document, default=str, ensure_ascii=False)
-    #response = {"día": dia}
-    #return response
 
 @app.route('/registro_eventos', methods=['GET', 'POST'])
 def registro_eventos():
@@ -109,7 +93,7 @@ def registro_eventos():
             "email": email,
             "eventos": {"$in": evento},
             "numero_documento_identidad": documento_identidad
-            })
+        })
 
         if existing_record:
             error = "Ya existe un registro para el/los eventos seleccionados con este correo electrónico y número de documento."
@@ -160,7 +144,16 @@ def registro_eventos():
 
             if error:
                 # Devuelve el formulario con el mensaje de error y los valores ingresados
-                return render_template('registro_eventos.html', eventos=registros_eventos, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error)
+                return render_template(
+                    'registro_eventos.html',
+                    eventos=eventos_por_dia,
+                    tipos_documento=tipos_documento,
+                    paises=paises, vinculos=vinculos,
+                    unidades=unidades,
+                    sedes=sedes,
+                    record=record,
+                    error=error
+                )
 
             else:
                 form_success = True
@@ -170,10 +163,9 @@ def registro_eventos():
             del record['_id']
             del record['registro']
 
-    
     # Enviar correo electrónico con el código QR
     if form_success:
-        dehydrated_record =  {
+        dehydrated_record = {
             "email": record['email'],
             "numero_documento_identidad": record['numero_documento_identidad'],
             "nombres": record['nombres'],
@@ -181,33 +173,48 @@ def registro_eventos():
         }
 
         # Genera el código QR
-        QR =  record['email'].replace('.','') + '.png'
+        QR = record['email'].replace('.', '') + '.png'
         PATH = "./images/QRs/"
 
         img = qrcode.make(str(dehydrated_record))
-        img.save(PATH+QR)
+        img.save(PATH + QR)
 
         try:
             # Enviar correo electrónico con el código QR
             qr_url = PATH + QR
-            #enviar_correo(record['email'], f"Registro exitoso De País en País - {dehydrated_record['email']}", dehydrated_record, qr_url, record["eventos"])
+            enviar_correo(record['email'], f"Registro exitoso De País en País - {dehydrated_record['email']}", dehydrated_record, qr_url, record["eventos"])
         except Exception as e:
             print("Error al enviar el correo electrónico:", e)
-        
 
     # Renderiza el formulario sin errores
-    return render_template('registro_eventos.html', eventos=registros_eventos, tipos_documento=tipos_documento, paises=paises, vinculos=vinculos, unidades=unidades, sedes=sedes, record=record, error=error, form_success=form_success)
+    return render_template(
+        'registro_eventos.html',
+        eventos=eventos_por_dia,
+        tipos_documento=tipos_documento,
+        paises=paises,
+        vinculos=vinculos,
+        unidades=unidades,
+        sedes=sedes,
+        record=record,
+        error=error,
+        form_success=form_success
+    )
 
 # Errors handlers
 # Invalid URL
+
+
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found():
     return render_template("404.html"), 404
 
 # Internal server error
+
+
 @app.errorhandler(500)
-def page_not_found(e):
+def internal_server_error():
     return render_template("505.html"), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

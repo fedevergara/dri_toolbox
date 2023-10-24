@@ -3,12 +3,57 @@ dias = []
 eventos = []
 ecards = []
 
+
 def get_eventos():
     return dias, eventos, ecards
 
-tipos_documento = ["Tarjeta de Identidad", "Cédula de Ciudadanía", "Pasaporte", "Documento Extranjero", "Cédula de extranjería"]
-paises = ["Argentina", "Brasil", "Chile", "Colombia", "México", "Perú", "España", "Estados Unidos", "Canadá"]
-vinculos = ["Estudiante de pregrado", "Estudiante de posgrado", "Profesor/Investigador", "Personal Administrativo", "Egresado", "Externo"]
+
+tipos_documento = ["Tarjeta de Identidad", "Cédula de Ciudadanía",
+                   "Pasaporte", "Documento Extranjero", "Cédula de extranjería"]
+paises = [
+    "Colombia", "Andorra", "Emiratos Árabes Unidos", "Afganistán", "Antigua y Barbuda", "Anguila",
+    "Albania", "Armenia", "Antillas Neerlandesas", "Angola", "Antártida", "Argentina",
+    "Samoa Americana", "Austria", "Australia", "Aruba", "Islas Áland", "Azerbaiyán",
+    "Bosnia y Herzegovina", "Barbados", "Bangladesh", "Bélgica", "Burkina Faso",
+    "Bulgaria", "Bahréin", "Burundi", "Benin", "San Bartolomé", "Bermudas", "Brunéi",
+    "Bolivia", "Brasil", "Bahamas", "Bhután", "Isla Bouvet", "Botsuana", "Belarús",
+    "Belice", "Canadá", "Islas Cocos", "República Centro-Africana", "Congo", "Suiza",
+    "Costa de Marfil", "Islas Cook", "Chile", "Camerún", "China", "Costa Rica",
+    "Cuba", "Cabo Verde", "Islas Christmas", "Chipre", "República Checa", "Alemania",
+    "Yibuti", "Dinamarca", "Domínica", "República Dominicana", "Argel", "Ecuador", "Estonia",
+    "Egipto", "Sahara Occidental", "Eritrea", "España", "Etiopía", "Finlandia", "Fiji",
+    "Islas Malvinas", "Micronesia", "Islas Faroe", "Francia", "Gabón", "Reino Unido",
+    "Granada", "Georgia", "Guayana Francesa", "Guernsey", "Ghana", "Gibraltar",
+    "Groenlandia", "Gambia", "Guinea", "Guadalupe", "Guinea Ecuatorial", "Grecia",
+    "Georgia del Sur e Islas Sandwich del Sur", "Guatemala", "Guam", "Guinea-Bissau",
+    "Guayana", "Hong Kong", "Islas Heard y McDonald", "Honduras", "Croacia", "Haití",
+    "Hungría", "Indonesia", "Irlanda", "Israel", "Isla de Man", "India",
+    "Territorio Británico del Océano Índico", "Irak", "Irán", "Islandia", "Italia",
+    "Jersey", "Jamaica", "Jordania", "Japón", "Kenia", "Kirguistán", "Camboya", "Kiribati",
+    "Comoros", "San Cristóbal y Nieves", "Corea del Norte", "Corea del Sur", "Kuwait",
+    "Islas Caimán", "Kazajstán", "Laos", "Líbano", "Santa Lucía", "Liechtenstein",
+    "Sri Lanka", "Liberia", "Lesotho", "Lituania", "Luxemburgo", "Letonia", "Libia",
+    "Marruecos", "Mónaco", "Moldova", "Montenegro", "Madagascar", "Islas Marshall",
+    "Macedonia", "Mali", "Myanmar", "Mongolia", "Macao", "Martinica", "Mauritania",
+    "Montserrat", "Malta", "Mauricio", "Maldivas", "Malawi", "México", "Malasia",
+    "Mozambique", "Namibia", "Nueva Caledonia", "Níger", "Islas Norkfolk", "Nigeria",
+    "Nicaragua", "Países Bajos", "Noruega", "Nepal", "Nauru", "Niue", "Nueva Zelanda",
+    "Omán", "Panamá", "Perú", "Polinesia Francesa", "Papúa Nueva Guinea", "Filipinas",
+    "Pakistán", "Polonia", "San Pedro y Miquelón", "Islas Pitcairn", "Puerto Rico",
+    "Palestina", "Portugal", "Islas Palaos", "Paraguay", "Qatar", "Reunión", "Rumanía",
+    "Serbia", "Rusia", "Ruanda", "Arabia Saudita", "Islas Solomón", "Seychelles",
+    "Sudán", "Suecia", "Singapur", "Santa Elena", "Eslovenia", "Islas Svalbard y Jan Mayen",
+    "Eslovaquia", "Sierra Leona", "San Marino", "Senegal", "Somalia", "Surinam",
+    "Santo Tomé y Príncipe", "El Salvador", "Siria", "Suazilandia", "Islas Turcas y Caicos",
+    "Chad", "Territorios Australes Franceses", "Togo", "Tailandia", "Tanzania", "Tayikistán",
+    "Tokelau", "Timor-Leste", "Turkmenistán", "Túnez", "Tonga", "Turquía", "Trinidad y Tobago",
+    "Tuvalu", "Taiwán", "Ucrania", "Uganda", "Estados Unidos de América", "Uruguay",
+    "Uzbekistán", "Ciudad del Vaticano", "San Vicente y las Granadinas", "Venezuela",
+    "Islas Vírgenes Británicas", "Islas Vírgenes de los Estados Unidos de América", "Vietnam",
+    "Vanuatu", "Wallis y Futuna", "Samoa", "Yemen", "Mayotte", "Sudáfrica"
+]
+vinculos = ["Externo", "Estudiante de pregrado", "Estudiante de posgrado",
+            "Profesor/Investigador", "Personal Administrativo", "Egresado"]
 unidades = [
     "Corporación Académica Ambiental",
     "Corporación Académica de Ciencias Básicas Biomédicas",
@@ -52,6 +97,7 @@ unidades = [
     "Vicerrectoría de Investigación",
     "Vicerrectoría General"]
 sedes = [
+    "Campus Medellín",
     "Campus Amalfi",
     "Campus Andes",
     "Campus Apartadó",
@@ -59,7 +105,6 @@ sedes = [
     "Campus Carepa",
     "Campus Caucasia",
     "Campus La Pintada",
-    "Campus Medellín",
     "Campus Puerto Berrío",
     "Campus Segovia - Remedios",
     "Campus Santa Fe de Antioquia",

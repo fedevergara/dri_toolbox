@@ -17,36 +17,8 @@
     
     <form action="/registro_eventos" method="POST" id="registro_eventos"> 
         <div class="form-section bg-body-tertiary p-5 rounded">
-            </br>
+            <p class="h6">Selecciona el/los eventos a los que desea inscribirse:</p></br>
             {% include "eventos.html" %}
-            </br>
-        </div></br>
-
-        <div class="form-section bg-body-tertiary p-5 rounded">
-            <p class="h6">Selecciona el o los eventos a los que desea inscribirse:</p></br>
-            
-            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btncheck1">Martes 14</label>
-              
-                <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btncheck2">Miércoles 15</label>
-              
-                <input type="checkbox" class="btn-check" id="btncheck3" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btncheck3">Jueves 16</label>
-
-                <input type="checkbox" class="btn-check" id="btncheck4" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btncheck4">Viernes 17</label>
-            </div></br></br>
-            
-            <div id="eventos-container"></div>
-            
-            <div id="modal" class="modal">
-                <div class="modal-content">
-                    <span class="close-modal">&times;</span>
-                    <img id="modal-image" src="" alt="Imagen del evento">
-                </div>
-            </div>
         </div>
         </br>
         <div class="form-section bg-body-tertiary p-5 rounded">
@@ -119,11 +91,6 @@
         </div>
     
     <script src="/static/js/buscar_correo.js"></script>
-    <script src="/static/js/filtro_eventos.js"></script>
-    
-    <script>
-        window.addEventListener("load", FiltroEventos);
-    </script>
 
     </form></br></br>
 

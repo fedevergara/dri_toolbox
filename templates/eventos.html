@@ -1,34 +1,28 @@
 <div class="row">
-    <div class="col-4">
-      <div id="list-example" class="list-group">
-        <a class="list-group-item list-group-item-action" href="#list-item-1">Item 1</a>
-        <a class="list-group-item list-group-item-action" href="#list-item-2">Item 2</a>
-        <a class="list-group-item list-group-item-action" href="#list-item-3">Item 3</a>
-        <a class="list-group-item list-group-item-action" href="#list-item-4">Item 4</a>
-      </div>
+    <div class="row">
+        <div id="list-example" class="list-group list-group-horizontal">
+        <a class="list-group-item list-group-item-action rounded" href="#list-item-1">Martes 14</a>
+        <a class="list-group-item list-group-item-action rounded" href="#list-item-2">Miércoles 15</a>
+        <a class="list-group-item list-group-item-action rounded" href="#list-item-3">Jueves 16</a>
+        <a class="list-group-item list-group-item-action rounded" href="#list-item-4">Viernes 17</a>
+        </div>
     </div>
-    <div class="col-8">
-      <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-              Default checkbox
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-            <label class="form-check-label" for="flexCheckChecked">
-              Checked checkbox
-            </label>
-          </div>
-        <h4 id="list-item-1">Item 1</h4>
-        <p>...</p>
-        <h4 id="list-item-2">Item 2</h4>
-        <p>...</p>
-        <h4 id="list-item-3">Item 3</h4>
-        <p>...</p>
-        <h4 id="list-item-4">Item 4</h4>
-        <p>...</p>
-      </div>
+
+    <div class="auto"></br>
+        <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollable-section" tabindex="0">
+            <div class="form-check form-switch">
+                {% for dia, eventos_dia in eventos.items() %}
+                    </br>
+                    <h5 id="list-item-{{ loop.index }}">{{ dia }}:</h5>
+                    {% for evento in eventos_dia %}
+                        <div class="elemento-evento">
+                            <input class="form-check-input" type="checkbox" id="evento_{{ evento.ecard }}" name="eventos" value="{{ evento.evento }}" {% if evento.evento in record.eventos %} checked {% endif %}>
+                            <label class="form-check-label" for="evento_{{ evento.ecard }}">{{ evento.evento }}</label>
+                            <i class="bi bi-info-circle"></i>
+                        </div>
+                        {% endfor %}
+                {% endfor %}
+            </div></br>
+        </div>
     </div>
-  </div>
+</div>

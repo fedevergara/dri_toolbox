@@ -7,13 +7,12 @@ import pickle
 import os
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from google.auth.transport.requests import Request
 
 from config import SECRET_FILE
 
+
 def Create_Service(client_secret_file, api_name, api_version, *scopes):
-    print(client_secret_file, api_name, api_version, scopes, sep='-')
     CLIENT_SECRET_FILE = client_secret_file
     API_SERVICE_NAME = api_name
     API_VERSION = api_version
@@ -31,7 +30,8 @@ def Create_Service(client_secret_file, api_name, api_version, *scopes):
         if cred and cred.expired and cred.refresh_token:
             cred.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(
+                CLIENT_SECRET_FILE, SCOPES)
             cred = flow.run_local_server()
 
         with open(f"./pickle/{pickle_file}", 'wb') as token:
@@ -41,7 +41,7 @@ def Create_Service(client_secret_file, api_name, api_version, *scopes):
         service = build(API_SERVICE_NAME, API_VERSION, credentials=cred)
         print(API_SERVICE_NAME, 'service created successfully')
         return service
-    
+
     except Exception as e:
         print('Unable to connect.')
         print(e)
@@ -76,11 +76,12 @@ def enviar_correo(enviar_a, asunto, registro, qr_url, eventos):
     if registro and qr_url:
         with open(qr_url, 'rb') as image_file:
             image_data = image_file.read()
-    
+
         # Adjunta la imagen al correo
         image_attachment = MIMEImage(image_data)
-        file = registro['email'].replace('.','')
-        image_attachment.add_header("Content-Disposition", "attachment", filename=f"{file}.jpg")
+        file = registro['email'].replace('.', '')
+        image_attachment.add_header(
+            "Content-Disposition", "attachment", filename=f"{file}.jpg")
         mimeMessage.attach(image_attachment)
 
         mimeMessage['to'] = enviar_a
@@ -88,10 +89,11 @@ def enviar_correo(enviar_a, asunto, registro, qr_url, eventos):
         mimeMessage.attach(MIMEText(html, 'html'))
         raw_string = base64.urlsafe_b64encode(mimeMessage.as_bytes()).decode()
 
-        message = service.users().messages().send(userId='me', body={'raw': raw_string}).execute()
+        message = service.users().messages().send(
+            userId='me', body={'raw': raw_string}).execute()
         print(message)
         return message
-    
+
     else:
         print("No se pudo enviar el correo electrónico.")
         return None

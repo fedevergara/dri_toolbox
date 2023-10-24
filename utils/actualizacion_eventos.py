@@ -18,34 +18,37 @@ RESOURCE = "https://graph.microsoft.com"
 
 context = adal.AuthenticationContext(authority)
 
-token = context.acquire_token_with_username_password(RESOURCE, username, password, client_id)
+token = context.acquire_token_with_username_password(
+    RESOURCE, username, password, client_id)
 
 URL = 'https://graph.microsoft.com/v1.0/'
 HEADERS = {'Authorization': 'Bearer ' + token['accessToken']}
-response = requests.get(URL + 'me/drive/', headers = HEADERS)
+response = requests.get(URL + 'me/drive/', headers=HEADERS)
 
 if (response.status_code == 200):
     response = json.loads(response.text)
-    #print('Connected to the OneDrive of', response['owner']['user']['displayName']+' (',response['driveType']+' ).', \
+    # print('Connected to the OneDrive of', response['owner']['user']['displayName']+' (',response['driveType']+' ).', \
     #     '\nConnection valid for one hour. Reauthenticate if required.')
 elif (response.status_code == 401):
     response = json.loads(response.text)
-    print('API Error! : ', response['error']['code'],\
-         '\nSee response for more details.')
+    print('API Error! : ', response['error']['code'],
+          '\nSee response for more details.')
 else:
     response = json.loads(response.text)
     print('Unknown error! See response for more details.')
 
+
 def actualizar_eventos():
-# Importa la lista de eventos
+    # Importa la lista de eventos
     dias, eventos, ecards = get_eventos()
 
     def descarga_eventos(HEADERS):
-        url = URL + "me/drive/items/01E3F34DQXJK3ATV6QJFHKNUH6HAI6UFPJ/workbook/tables('1')/rows"
+        url = URL + \
+            "me/drive/items/01E3F34DQXJK3ATV6QJFHKNUH6HAI6UFPJ/workbook/tables('1')/rows"
         try:
             r = requests.get(url, headers=HEADERS)
             r.raise_for_status()  # Genera una excepción si la solicitud no fue exitosa
-            
+
             events_data = r.json().get('value', [])
             events_names = []
             events_ecards = []
@@ -56,11 +59,11 @@ def actualizar_eventos():
                 event_day = event_reg[0].strip()
                 event_name = event_reg[1].strip()
                 event_ecard = event_reg[2]
-                
+
                 events_days.append(event_day)
                 events_names.append(event_name)
                 events_ecards.append(event_ecard)
-                
+
             '''
             events_names = []
             events_ecards = []
@@ -70,7 +73,7 @@ def actualizar_eventos():
                 event_ecard = event_reg[1]
                 events_names.append(event_name)
                 events_ecards.append(event_ecard)'''
-                
+
             return events_days, events_names, events_ecards
 
         except requests.exceptions.RequestException as e:
@@ -79,10 +82,11 @@ def actualizar_eventos():
         except Exception as e:
             print("Error inesperado:", e)
             return None
-    
+
     def descarga_ecards(HEADERS):
-        #List folders under root directory
-        data = json.loads(requests.get(URL + 'me/drive/items/01E3F34DUV536AD3PM4ZCYJ6AGGKZXCCPH/children', headers=HEADERS).text)
+        # List folders under root directory
+        data = json.loads(requests.get(
+            URL + 'me/drive/items/01E3F34DUV536AD3PM4ZCYJ6AGGKZXCCPH/children', headers=HEADERS).text)
 
         # Itera a través de los archivos y descarga las imágenes
         try:
@@ -103,7 +107,7 @@ def actualizar_eventos():
             print("Error en la solicitud:", e)
         except Exception as e:
             print("Error inesperado:", e)
-    
+
     # Descarga los eventos de la hoja de cálculo
     nuevos_dias, nuevos_eventos, ecards = descarga_eventos(HEADERS)
     # Descarga las eCards
