@@ -9,38 +9,56 @@
 
     <div class="bg-body-tertiary p-3 rounded">
         Registros de asistencias a Eventos DRI 2023 - Presenciales.
-    </div>
+    </div></br></br>
 
-    <button id="activar-camara">Activar Cámara</button>
-    <video id="camara" autoplay="true" style="display:none;"></video>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.3.3/dist/jsQR.min.js"></script>
-    <script>
-        document.getElementById('activar-camara').addEventListener('click', function () {
-            // Acceder a la cámara
-            navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
-                var video = document.getElementById('camara');
-                video.srcObject = stream;
-
-                video.onloadedmetadata = function (e) {
+    <div class="bg-body-tertiary p-3 rounded">
+        <button id="activar-camara">Activar Cámara</button></br></br>
+        <video id="camara" style="display: none;"></video>
+        <canvas id="canvas" style="display: none;"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+        <script>
+            document.getElementById('activar-camara').addEventListener('click', function () {
+                // Acceder a la cámara
+                navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+                    var video = document.getElementById('camara');
+                    video.style.display = 'block';
+                    video.srcObject = stream;
                     video.play();
-                    // Capturar el QR
-                    var canvas = document.createElement('canvas');
-                    var context = canvas.getContext('2d');
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                    var code = jsQR(imageData.data, canvas.width, canvas.height);
-                    if (code) {
-                        alert('Código QR capturado: ' + code.data);
-                        // Aquí puedes enviar la información a tu servidor Flask para su procesamiento
-                    }
-                };
-            }).catch(function (error) {
-                console.error('Error al acceder a la cámara: ' + error);
+                }).catch(function (error) {
+                    console.error('Error al acceder a la cámara: ' + error);
+                });
             });
-        });
-    </script>
+
+            var video = document.getElementById('camara');
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+
+            video.onloadedmetadata = function (e) {
+                // Capturar el QR
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                var code = jsQR(imageData.data, canvas.width, canvas.height);
+                console.log(code);
+                if (code) {
+                    // Enviar la información capturada al servidor Flask
+                    fetch('/registro_asistencia', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ data: code.data })
+                    }).then(response => response.json()).then(data => {
+                        alert('Respuesta del servidor: ' + data.message);
+                    }).catch(error => {
+                        console.error('Error en la solicitud AJAX: ' + error);
+                    });
+                }
+                requestAnimationFrame(video.onloadedmetadata);
+            };
+        </script>
+    </div>
 </main>
 
 {% endblock %}

@@ -4,8 +4,8 @@ from utils.actualizacion_eventos import actualizar_eventos
 from pymongo import MongoClient, DESCENDING
 from utils.send_email import enviar_correo
 from bson.objectid import ObjectId
-from config import CONTRASEÑA
 from time import time
+import time as t
 import qrcode
 import json
 
@@ -211,21 +211,39 @@ def registro_eventos():
 
 @app.route('/registro_asistencia', methods=['GET', 'POST'])
 def registro_asistencia():
-    if request.method == 'POST':
-        if request.form['password'] == CONTRASEÑA:
-            # Accede a la cámara y captura información del QR (implementación necesaria)
-            # Verifica y almacena el registro en MongoDB
-            registro = {"dato": "informacion_del_qr"}
-            if collection_assistants.find_one(registro) is None:
-                collection_assistants.insert_one(registro)
-                mensaje = "Registro exitoso."
-                return render_template("registro_asistencia.html", mensaje=mensaje)
-            else:
-                mensaje = "Ya se ha registrado la asistencia."
-                return render_template("registro_asistencia.html", mensaje=mensaje)
+    type = request.content_type
+    if type == "application/json":
+        data = request.json
+        registro = json.loads(data['data'].replace("'", "\""))
+        print(registro)
+        t.sleep(0.2)
+
+        record = {
+            '_id': ObjectId(),
+            "registro": int(time()),
+            "email": registro['email'],
+            "numero_documento_identidad": registro['numero_documento_identidad'],
+            "nombres": registro['nombres'],
+            "apellidos": registro['apellidos']
+        }
+
+        # Accede a la cámara y captura información del QR (implementación necesaria)
+        # Verifica y almacena el registro en MongoDB
+        
+        existing_record = collection_assistants.find_one({
+            "email": registro['email'],
+            "numero_documento_identidad": registro['numero_documento_identidad'],
+            "nombres": registro['nombres'],
+            "apellidos": registro['apellidos']
+        })
+
+        if not existing_record:
+            collection_assistants.insert_one(record)
+            print("Registro exitoso.")
+            t.sleep(0.2)
         else:
-            error = "Contraseña incorrecta. Inténtalo de nuevo."
-            return render_template("registro_asistencia.html", error=error)
+            print("Ya se ha registrado la asistencia.")
+            t.sleep(0.2)
     
     return render_template("registro_asistencia.html")
 
