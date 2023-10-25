@@ -210,13 +210,12 @@ def registro_eventos():
 
 
 @app.route('/registro_asistencia', methods=['GET', 'POST'])
-def registro_asistencia():
-    type = request.content_type
-    if type == "application/json":
+def registro_asistencia():    
+    type_ = request.content_type
+    if type_ == "application/json":
         data = request.json
         registro = json.loads(data['data'].replace("'", "\""))
-        print(registro)
-        t.sleep(0.2)
+        evento_registrado = data['evento']
 
         record = {
             '_id': ObjectId(),
@@ -224,7 +223,8 @@ def registro_asistencia():
             "email": registro['email'],
             "numero_documento_identidad": registro['numero_documento_identidad'],
             "nombres": registro['nombres'],
-            "apellidos": registro['apellidos']
+            "apellidos": registro['apellidos'],
+            "evento": evento_registrado,
         }
 
         # Accede a la cámara y captura información del QR (implementación necesaria)
@@ -234,18 +234,26 @@ def registro_asistencia():
             "email": registro['email'],
             "numero_documento_identidad": registro['numero_documento_identidad'],
             "nombres": registro['nombres'],
-            "apellidos": registro['apellidos']
+            "apellidos": registro['apellidos'],
+            "evento": evento_registrado
         })
 
         if not existing_record:
             collection_assistants.insert_one(record)
             print("Registro exitoso.")
-            t.sleep(0.2)
         else:
-            print("Ya se ha registrado la asistencia.")
-            t.sleep(0.2)
+            print("Ya se encuentra registrada la asistencia.")
     
-    return render_template("registro_asistencia.html")
+    eventos_enviar = []
+    for evento_ in registros_eventos:
+        e = {
+            "dia": evento_['dia'],
+            "evento": evento_['evento']
+        }
+        eventos_enviar.append(e)
+
+    return render_template("registro_asistencia.html",
+                           eventos=eventos_enviar)
 
 
 # Errors handlers

@@ -9,54 +9,124 @@
 
     <div class="bg-body-tertiary p-3 rounded">
         Registros de asistencias a Eventos DRI 2023 - Presenciales.
+    </div>
+    <div class="bg-body-tertiary p-3 rounded">
+    <select class="form-select form-select-md" aria-label="Small select example" name="eventos_disponibles" id="eventos_disponibles">
+        <option selected>Eventos disponibles</option>
+        {% for evento in eventos %}
+            <option value="{{ evento }}">{{ evento }}</option>
+        {% endfor %}
+      </select>
     </div></br></br>
 
+    <div id="recuadro_1" class="gris"></div>
+    </br>
+    <div id="informacion-usuario"></div>
+    <div id="informacion-evento"></div>
+    </br>
     <div class="bg-body-tertiary p-3 rounded">
+        <audio id="beep" name="beep" preload="auto">
+            <source src="/static/audio/beep.mp3" type="audio/mp3">
+        </audio>
+
         <button id="activar-camara">Activar Cámara</button></br></br>
         <video id="camara" style="display: none;"></video>
         <canvas id="canvas" style="display: none;"></canvas>
+
         <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
         <script>
-            document.getElementById('activar-camara').addEventListener('click', function () {
-                // Acceder a la cámara
-                navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
-                    var video = document.getElementById('camara');
-                    video.style.display = 'block';
-                    video.srcObject = stream;
-                    video.play();
-                }).catch(function (error) {
-                    console.error('Error al acceder a la cámara: ' + error);
-                });
-            });
-
             var video = document.getElementById('camara');
             var canvas = document.getElementById('canvas');
             var context = canvas.getContext('2d');
+            var lastCaptureTime = 0;
+            var selectedEvento = '';
 
-            video.onloadedmetadata = function (e) {
-                // Capturar el QR
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                var code = jsQR(imageData.data, canvas.width, canvas.height);
-                console.log(code);
-                if (code) {
-                    // Enviar la información capturada al servidor Flask
-                    fetch('/registro_asistencia', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ data: code.data })
-                    }).then(response => response.json()).then(data => {
-                        alert('Respuesta del servidor: ' + data.message);
-                    }).catch(error => {
-                        console.error('Error en la solicitud AJAX: ' + error);
+            document.getElementById('activar-camara').addEventListener('click', function () {
+                var selectedEvento = document.getElementById("eventos_disponibles").value;
+
+                if (selectedEvento !== "Eventos disponibles") {
+                    // Acceder a la cámara solo si se ha seleccionado un evento válido
+                    navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+                        video.style.display = 'block';
+                        video.srcObject = stream;
+                        video.play();
+
+                        video.onloadedmetadata = function () {
+                            requestAnimationFrame(captureQRCode);
+                        };
+                    }).catch(function (error) {
+                        console.error('Error al acceder a la cámara: ' + error);
                     });
+                } else {
+                    // Mostrar un mensaje de error al usuario si no se ha seleccionado un evento válido
+                    alert('Debe seleccionar un evento válido para activar la cámara.');
                 }
-                requestAnimationFrame(video.onloadedmetadata);
-            };
+            });
+
+            var Beep = document.getElementById('beep');
+            var recuadro_1 = document.getElementById('recuadro_1');
+
+            function playAudio() { 
+                if (Beep) {
+                    Beep.play();
+                    recuadro_1.classList.add('verde');
+                    setTimeout(function() {
+                        recuadro_1.classList.remove('verde');
+                    }, 2000);
+
+                } else {
+                    console.error('Elemento de audio "beep" no encontrado en el DOM.');
+                }
+            } 
+
+            function captureQRCode() {
+                var selectedEvento = document.getElementById("eventos_disponibles").value;
+                var currentTime = Date.now();
+                if (currentTime - lastCaptureTime >= 2000) {
+                    lastCaptureTime = currentTime;
+                    // Capturar el QR
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    var code = jsQR(imageData.data, canvas.width, canvas.height);
+                    if (code) {
+
+                        // Actualiza el HTML con la información del usuario y el evento
+                        const jsonString = code.data;
+                        console.log(jsonString);
+                        document.getElementById('informacion-usuario').innerHTML = `
+                            <div class="bg-body-tertiary p-3 rounded" style="font-size: 20px;">
+                                Información del Usuario:
+                                <ul>
+                                    <li>${jsonString}</li>
+                                </ul>
+                            </div>
+                        `;
+                        // Limpia el contenido del div después de 2 segundos
+                        setTimeout(function () {
+                            document.getElementById('informacion-usuario').innerHTML = '';
+                        }, 6000);
+                        
+                        // Enviar la información capturada al servidor Flask
+                        playAudio();
+                        
+                        fetch('/registro_asistencia', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ data: code.data, evento: selectedEvento })
+                        }).then(response => response.json()).then(data => {
+                            console.log('Respuesta del servidor: ' + data);
+                            
+                        }).catch(error => {
+                            console.error('Error en la solicitud AJAX: ' + error);
+                        });
+                    }
+                }
+                requestAnimationFrame(captureQRCode);
+            }
         </script>
     </div>
 </main>
