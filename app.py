@@ -141,9 +141,9 @@ def registro_eventos():
                 error = "Por favor, seleccione un país."
             elif vinculo not in vinculos:
                 error = "Por favor, seleccione un vínculo."
-            elif unidad not in unidades and vinculo != "Externo":
+            elif unidad == "Unidad Académica/Administrativa:" and vinculo != "Externo":
                 error = "Por favor, seleccione una dependencia."
-            elif sede not in sedes and vinculo != "Externo":
+            elif sede == "Campus de origen:" and vinculo != "Externo":
                 error = "Por favor, seleccione un campus."
 
             if error:

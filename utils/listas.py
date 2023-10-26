@@ -55,6 +55,7 @@ paises = [
 vinculos = ["Externo", "Estudiante de pregrado", "Estudiante de posgrado",
             "Profesor/Investigador", "Personal Administrativo", "Egresado"]
 unidades = [
+    "N/A",
     "Corporación Académica Ambiental",
     "Corporación Académica de Ciencias Básicas Biomédicas",
     "Corporación Académica para el Estudio de Patologías Tropicales",
@@ -97,6 +98,7 @@ unidades = [
     "Vicerrectoría de Investigación",
     "Vicerrectoría General"]
 sedes = [
+    "N/A",
     "Campus Medellín",
     "Campus Amalfi",
     "Campus Andes",
