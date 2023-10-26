@@ -109,9 +109,9 @@ def registro_eventos():
             ciudad = request.form['ciudad']
             entidad = request.form['entidad']
             vinculo = request.form['vinculo']
-            unidad = request.form['unidad']
-            programa = request.form['programa']
-            sede = request.form['sede']
+            unidad = request.form['unidad'] if vinculo != "Externo" else "N/A"
+            programa = request.form['programa'] if vinculo != "Externo" else "N/A"
+            sede = request.form['sede'] if vinculo != "Externo" else "N/A"
 
             record = {
                 '_id': ObjectId(),
@@ -141,9 +141,9 @@ def registro_eventos():
                 error = "Por favor, seleccione un país."
             elif vinculo not in vinculos:
                 error = "Por favor, seleccione un vínculo."
-            elif unidad not in unidades:
+            elif unidad not in unidades and vinculo != "Externo":
                 error = "Por favor, seleccione una dependencia."
-            elif sede not in sedes:
+            elif sede not in sedes and vinculo != "Externo":
                 error = "Por favor, seleccione un campus."
 
             if error:
@@ -174,7 +174,7 @@ def registro_eventos():
 
         # Genera el código QR
         QR = record['email'].replace('.', '') + '.png'
-        PATH = "./images/QRs/"
+        PATH = "./static/images/QRs/"
 
         img = qrcode.make(str(dehydrated_record))
         img.save(PATH + QR)
@@ -185,7 +185,6 @@ def registro_eventos():
         
         del record['_id']
         del record['registro']
-        del record['qr']
 
         try:
             # Enviar correo electrónico con el código QR
@@ -213,9 +212,12 @@ def registro_eventos():
 def registro_asistencia():    
     type_ = request.content_type
     if type_ == "application/json":
-        data = request.json
-        registro = json.loads(data['data'].replace("'", "\""))
-        evento_registrado = data['evento']
+        try:
+            data = request.json
+            registro = json.loads(data['data'].replace("'", "\""))
+            evento_registrado = data['evento']
+        except Exception as e:
+            print("Error al cargar los datos:", e)
 
         record = {
             '_id': ObjectId(),

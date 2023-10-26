@@ -1,10 +1,26 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.icon-link').on('click', function(e) {
+            e.preventDefault();
+            var ecardUrl = $(this).data('ecard-url');
+            $('#ecard-image').attr('src', ecardUrl);
+            $('#modal-ecard').modal('show');
+        });
+    });
+</script>
+
 <div class="row">
     <div class="row">
         <div id="list-example" class="list-group list-group-horizontal">
-        <a class="list-group-item list-group-item-action rounded" href="#list-item-1">Martes 14</a>
-        <a class="list-group-item list-group-item-action rounded" href="#list-item-2">Miércoles 15</a>
-        <a class="list-group-item list-group-item-action rounded" href="#list-item-3">Jueves 16</a>
-        <a class="list-group-item list-group-item-action rounded" href="#list-item-4">Viernes 17</a>
+            <a class="list-group-item list-group-item-action rounded" href="#list-item-1">Viernes 3</a>
+            <a class="list-group-item list-group-item-action rounded" href="#list-item-2">Sábado 11</a>
+            <a class="list-group-item list-group-item-action rounded" href="#list-item-3">Domingo 12</a>
+            <a class="list-group-item list-group-item-action rounded" href="#list-item-4">Martes 14</a>
+            <a class="list-group-item list-group-item-action rounded" href="#list-item-5">Miércoles 15</a>
+            <a class="list-group-item list-group-item-action rounded" href="#list-item-6">Jueves 16</a>
+            <a class="list-group-item list-group-item-action rounded" href="#list-item-7">Viernes 17</a>
         </div>
     </div>
 
@@ -17,12 +33,28 @@
                     {% for evento in eventos_dia %}
                         <div class="elemento-evento">
                             <input class="form-check-input" style="color:#4c5155;font-size:14px" type="checkbox" id="evento_{{ loop.index }}" name="eventos" value="{{ evento.evento }}" {% if evento.evento in record.eventos %} checked {% endif %}>
-                            <label class="form-check-label" style="color:#4c5155;font-size:14px" for="evento_{{ loop.index }}">{{ evento.evento }}</label>
-                            <i class="bi bi-info-circle"></i>
+                            
+                            <a class="icon-link" href="#" data-ecard-url="/static/images/ecards/{{ evento.ecard }}.png" data-toggle="modal" data-target="#modal-ecard">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                                </svg>
+                            
+                            <label class="form-check-label" style="color:#4c5155;font-size:14px" for="evento_{{ loop.index }}">{{ evento.evento }}</label></a>
+                        
                         </div>
                         {% endfor %}
                 {% endfor %}
             </div></br>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-ecard" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="ecard-image" src="" alt="Ecard" class="img-fluid d-block mx-auto">
+            </div>
         </div>
     </div>
 </div>

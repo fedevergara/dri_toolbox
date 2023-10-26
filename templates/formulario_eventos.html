@@ -1,11 +1,24 @@
 {% if form_success %}
     <main class="container">
         <div class="form-section bg-body-tertiary p-5 rounded">
-        <h1>Registro enviado</h1>
-        <p class="lead">Muchas gracias por la información.</p>
-        </br>
-        <p class="lead" style="color:#4c5155;font-size:14px">{{ record }}</p>
-        </div>
+            <h1>Registro enviado</h1>
+            <p class="lead">Muchas gracias por la información.</p>
+            </br>
+            <p class="lead" style="color:#4c5155;font-size:16px">El QR a continuación es válido para confirmar su asistencia a los eventos a los que se haya registrado, otra copia del QR también le llegará al correo electrónico registrado: {{ record['email'] }}. </p>
+            </br>
+            <p class="lead" style="color:#4c5155;font-size:15px">Por favor recuerde presentar este QR en la entrada al evento.</p>
+            </br>
+            <div class="contenedor">
+                <a href="/static/images/QRs/{{ record['qr'] }}" download="record['qr']">
+                    <button type="button" class="btn btn-success">Descargar QR</button>
+                </a>
+            </div></br>
+            <div class="contenedor">
+                <img src="/static/images/QRs/{{ record['qr'] }}" class="img-fluid" alt="Banner">
+            </div>
+        </div></br>
+        <a href="{{ url_for('registro_eventos') }}" class="btn btn-secondary" role="button" aria-disabled="true">Realizar un nuevo registro</a>
+        </br></br></br>
     </main>
 
 {% else %}    
@@ -14,23 +27,27 @@
         {{ error }}
     </div>
     {% endif %}
+    <div class="bg-body-tertiary p-3 rounded">
+        Registro Eventos DRI 2023 Presenciales.
+        </br></br>
+        Gracias por registrarte a los eventos organizados desde la Dirección de Relaciones Internacionales de la Universidad de Antioquia. 
+    </div></br>
     
     <form action="/registro_eventos" method="POST" id="registro_eventos"> 
         
-        <div class="form-section bg-body-tertiary p-4 rounded">
+        <div class="form-section bg-body-tertiary p-5 rounded">
             <p class="h5">Selecciona el/los eventos a los que desea inscribirse:</p></br>
             {% include "eventos.html" %}
         </div>
         </br>
-        <div class="form-section bg-body-tertiary p-4 rounded">
+        <div class="form-section bg-body-tertiary p-5 rounded">
             <p class="h5">Datos personales:</p></br>
             
-            <div class="row g-1">
+            <div class="row g-3">
                 <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="email" name="email" required value="{{ record.email }}" onblur="BuscarCorreo()">
                 <p class="h6" style="color:#6c757d;font-size:13px">Si se ha registrado previamente para otros eventos, podrá importar sus datos con el correo electrónico previamente registrado.</p>
                 <p class="h6" style="color:#6c757d;font-size:13px">Por favor actualice los datos en caso ser necesario.</p>
-                
-                </br>
+                <div style="margin-bottom: 10px;"></div>
                 
                 <select class="form-select form-select-md" aria-label="Tipo de documento de identida" name="tipos_documento" id="tipos_documento">
                     <option selected>Tipo de documento de identidad:</option>
@@ -47,8 +64,6 @@
                 
                 <input type="text" class="form-control" placeholder="Apellidos" aria-label="Apellidos" name="apellidos" id="apellidos" required value="{{ record.apellidos }}">
                 
-                </br>
-                
                 <select class="form-select form-select-md" aria-label="País" name="pais" id="pais" required value="{{ record.pais }}">
                     <option selected>País:</option>
                         {% for pais in paises %}
@@ -57,17 +72,17 @@
                 </select>
                 
                 <input type="text" class="form-control" placeholder="Ciudad/Municipio:" aria-label="Ciudad/Municipio" name="ciudad" id="ciudad" required value="{{ record.ciudad }}">
-               
-                </br>
                 
                 <input type="text" class="form-control" placeholder="Institución o entidad de origen:" aria-label="Institución o entidad de origen" name="entidad" id="entidad" required value="{{ record.entidad }}">
                 
-                <select class="form-select form-select-md" aria-label="Vínculo con la Universidad de Antioquia" name="vinculo" id="vinculo">
+                <div style="margin-bottom: 10px;"></div>
+                <p class="h6" style="color:#6c757d;font-size:13px">En caso de no tener vínculo con la Universidad de Antioquia, favor seleccionar la opción "Externo".</p>
+                <select class="form-select form-select-md" aria-label="Vínculo con la Universidad de Antioquia" name="vinculo" id="vinculo"  onblur="Vinculo()">
                     <option selected>Vínculo con la Universidad de Antioquia:</option>
                         {% for vinculo in vinculos %}
                         <option value="{{ vinculo }}" {% if vinculo == record.vinculo %} selected {% endif %}>{{ vinculo }}</option>
                         {% endfor %}
-                </select><p class="h6" style="color:#6c757d;font-size:13px">En caso de no tener vínculo alguno con la universidad de Antioquia, favor seleccionar la opción "Externo".</p>
+                </select>
 
                 <select class="form-select form-select-md" aria-label="Unidad Académica/Administrativa" name="unidad" id="unidad">
                     <option selected>Unidad Académica/Administrativa:</option>
@@ -92,6 +107,7 @@
         </div>
     
     <script src="/static/js/buscar_correo.js"></script>
+    <script src="/static/js/validaciones.js"></script>
 
     </form></br></br>
 
