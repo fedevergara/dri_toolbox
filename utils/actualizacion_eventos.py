@@ -100,7 +100,7 @@ def actualizar_eventos():
                     image_response = requests.get(image_url)
 
                     # Guarda la imagen en un archivo local
-                    with open(f"static/images/ecards/{image_name}", "wb") as f:
+                    with open(f"./static/images/ecards/{image_name}", "wb") as f:
                         f.write(image_response.content)
 
         except requests.exceptions.RequestException as e:
