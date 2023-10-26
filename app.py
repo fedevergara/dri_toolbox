@@ -5,9 +5,9 @@ from pymongo import MongoClient, DESCENDING
 from utils.send_email import enviar_correo
 from bson.objectid import ObjectId
 from time import time
-import time as t
 import qrcode
 import json
+import os
 
 db_uri = "mongodb://localhost:27017/"
 db_name = "international"
@@ -175,6 +175,9 @@ def registro_eventos():
         # Genera el código QR
         QR = record['email'].replace('.', '') + '.png'
         PATH = "./static/images/QRs/"
+
+        if not os.path.exists(PATH):
+            os.makedirs(PATH)
 
         img = qrcode.make(str(dehydrated_record))
         img.save(PATH + QR)

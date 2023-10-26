@@ -4,6 +4,7 @@ from getpass import getpass
 import json
 import adal
 import requests
+import os
 
 tenant = ONEDRIVE_TENANT
 client_id = ONEDRIVE_CLIENT_ID
@@ -64,15 +65,6 @@ def actualizar_eventos():
                 events_names.append(event_name)
                 events_ecards.append(event_ecard)
 
-            '''
-            events_names = []
-            events_ecards = []
-            for event in r.json().get('value', []):
-                event_reg = event['values'][0]
-                event_name = event_reg[0]
-                event_ecard = event_reg[1]
-                events_names.append(event_name)
-                events_ecards.append(event_ecard)'''
 
             return events_days, events_names, events_ecards
 
@@ -99,8 +91,15 @@ def actualizar_eventos():
                     # Realiza la solicitud GET para descargar la imagen
                     image_response = requests.get(image_url)
 
+                    # Directorio donde se almacenarán las imágenes
+                    ecards_directory = './static/images/ecards'
+
+                    # Verificar si la carpeta 'ecards' existe, y si no, crearla
+                    if not os.path.exists(ecards_directory):
+                        os.makedirs(ecards_directory)
+
                     # Guarda la imagen en un archivo local
-                    with open(f"./static/images/ecards/{image_name}", "wb") as f:
+                    with open(f"{ecards_directory}/{image_name}", "wb") as f:
                         f.write(image_response.content)
 
         except requests.exceptions.RequestException as e:
