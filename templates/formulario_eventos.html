@@ -37,6 +37,10 @@
         
         <div class="form-section bg-body-tertiary p-5 rounded">
             <p class="h5">Selecciona el/los eventos a los que desea inscribirse:</p></br>
+            <div style="margin-bottom: 5px;"></div>
+            <p class="h6" style="color:#6c757d;font-size:13px">
+                Con el ícono <img src="/static/images/icons/info-circle-fill.svg" alt="Bootstrap" width="14" height="14"> podrás ver los detalles del evento.<div style="margin-bottom: 10px;"></div>
+                    
             {% include "eventos.html" %}
         </div>
         </br>
@@ -88,7 +92,7 @@
                     <option selected>Unidad Académica/Administrativa:</option>
                         {% for unidad in unidades %}
                         <option value="{{ unidad }}" {% if unidad == record.unidad %} selected {% endif %}>{{ unidad }}</option>
-                        {% endfor %}
+                        {% endfor %}  
                 </select>
 
                 <input type="text" class="form-control" placeholder="Programa académico/Grupo de investigación:" aria-label="Programa académico/Grupo de investigación" name="programa" id="programa" value="{{ record.programa }}">
