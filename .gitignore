@@ -10,7 +10,8 @@ __pycache__/
 config.py
 
 # Images
-images/
+static/images/QRs/*.*
+static/images/ecards/*.*
 
 # Auth
 pickle/
