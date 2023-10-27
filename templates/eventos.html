@@ -33,7 +33,7 @@
                     <h6 id="list-item-{{ loop.index }}">{{ dia }}:</h6>
                     {% for evento in eventos_dia %}
                         <div class="elemento-evento">
-                            <input class="form-check-input" style="color:#4c5155;font-size:14px" type="checkbox" id="evento_{{ loop.index }}" name="eventos" value="{{ evento.dia + '|' + evento.evento }}" {% if evento.evento in record.eventos %} checked {% endif %}>
+                            <input class="form-check-input" style="color:#4c5155;font-size:14px" type="checkbox" id="evento_{{ loop.index }}" name="eventos" value="{{ evento.dia + ' | ' + evento.evento }}" {% if evento.evento in record.eventos %} checked {% endif %}>
                             
                             <a class="icon-link" href="#" data-ecard-url="/static/images/ecards/{{ evento.ecard }}.png" data-toggle="modal" data-target="#modal-ecard">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
