@@ -212,42 +212,50 @@ def registro_eventos():
 
 
 @app.route('/registro_asistencia', methods=['GET', 'POST'])
-def registro_asistencia():    
+def registro_asistencia():
+    registro = None
+
     type_ = request.content_type
     if type_ == "application/json":
         try:
             data = request.json
             registro = json.loads(data['data'].replace("'", "\""))
-            evento_registrado = data['evento']
+            data_evento = data['evento']
+            json_text = data_evento.replace("'", "\"")
+            evento_json = json.loads(json_text)
+            evento_registrado = evento_json['dia'] + " | " + evento_json['evento']
+
+
         except Exception as e:
             print("Error al cargar los datos:", e)
 
-        record = {
-            '_id': ObjectId(),
-            "registro": int(time()),
-            "email": registro['email'],
-            "numero_documento_identidad": registro['numero_documento_identidad'],
-            "nombres": registro['nombres'],
-            "apellidos": registro['apellidos'],
-            "evento": evento_registrado,
-        }
+        if registro:
+            record = {
+                '_id': ObjectId(),
+                "registro": int(time()),
+                "email": registro['email'],
+                "numero_documento_identidad": registro['numero_documento_identidad'],
+                "nombres": registro['nombres'],
+                "apellidos": registro['apellidos'],
+                "evento": evento_registrado,
+            }
 
-        # Accede a la cámara y captura información del QR (implementación necesaria)
-        # Verifica y almacena el registro en MongoDB
-        
-        existing_record = collection_assistants.find_one({
-            "email": registro['email'],
-            "numero_documento_identidad": registro['numero_documento_identidad'],
-            "nombres": registro['nombres'],
-            "apellidos": registro['apellidos'],
-            "evento": evento_registrado
-        })
+            # Accede a la cámara y captura información del QR (implementación necesaria)
+            # Verifica y almacena el registro en MongoDB
+            
+            existing_record = collection_assistants.find_one({
+                "email": registro['email'],
+                "numero_documento_identidad": registro['numero_documento_identidad'],
+                "nombres": registro['nombres'],
+                "apellidos": registro['apellidos'],
+                "evento": evento_registrado
+            })
 
-        if not existing_record:
-            collection_assistants.insert_one(record)
-            print("Registro exitoso.")
-        else:
-            print("Ya se encuentra registrada la asistencia.")
+            if not existing_record:
+                collection_assistants.insert_one(record)
+                print("Registro exitoso.")
+            else:
+                print("Ya se encuentra registrada la asistencia.")
     
     eventos_enviar = []
     for evento_ in registros_eventos:
