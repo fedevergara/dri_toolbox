@@ -2,6 +2,7 @@ import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+from utils.registro_ok import registro_ok
 
 import pickle
 import os
@@ -63,18 +64,11 @@ def enviar_correo(enviar_a, asunto, registro, qr_url, eventos):
     if registro:
         for i, evento in enumerate(eventos):
             if i == 0:
-                _eventos = evento
+                _eventos = "● " + evento
             else:
-                _eventos = _eventos + ", " + evento
+                _eventos = _eventos + "; <br>" + "● " + evento
     
-    html = f"""
-        <html>
-        <body>
-            <p>Gracias por registrarse en los eventos: </p>
-            {_eventos}
-        </body>
-        </html>
-        """
+    html = registro_ok(_eventos)
 
     if registro and qr_url:
         with open(qr_url, 'rb') as image_file:
