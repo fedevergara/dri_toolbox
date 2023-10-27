@@ -103,14 +103,14 @@ def registro_eventos():
 
         else:
             tipo_documento = request.form['tipos_documento']
-            nombres = request.form['nombres']
-            apellidos = request.form['apellidos']
+            nombres = request.form['nombres'].strip().title()
+            apellidos = request.form['apellidos'].strip().title()
             pais = request.form['pais']
-            ciudad = request.form['ciudad']
-            entidad = request.form['entidad']
+            ciudad = request.form['ciudad'].strip().title()
+            entidad = request.form['entidad'].strip().title()
             vinculo = request.form['vinculo']
             unidad = request.form['unidad'] if vinculo != "Externo" else "N/A"
-            programa = request.form['programa'] if vinculo != "Externo" else "N/A"
+            programa = request.form['programa'].strip().title() if vinculo != "Externo" else "N/A"
             sede = request.form['sede'] if vinculo != "Externo" else "N/A"
 
             record = {
@@ -192,7 +192,7 @@ def registro_eventos():
         try:
             # Enviar correo electrónico con el código QR
             qr_url = PATH + QR
-            enviar_correo(record['email'], f"Registro exitoso De País en País - {dehydrated_record['email']}", dehydrated_record, qr_url, record["eventos"])
+            enviar_correo(record['email'], f"Registro exitoso - De País en País Centroamérica y el Caribe - {dehydrated_record['email']}", dehydrated_record, qr_url, record["eventos"])
         except Exception as e:
             print("Error al enviar el correo electrónico:", e)
 

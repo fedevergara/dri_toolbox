@@ -6,7 +6,7 @@
             </br>
             <p class="lead" style="color:#4c5155;font-size:16px">El QR a continuación es válido para confirmar su asistencia a los eventos a los que se haya registrado, otra copia del QR también le llegará al correo electrónico registrado: {{ record['email'] }}. </p>
             </br>
-            <p class="lead" style="color:#4c5155;font-size:15px">Por favor recuerde presentar este QR en la entrada al evento.</p>
+            <p class="lead" style="color:#4c5155;font-size:15px">Por favor recuerde presentar este QR en la entrada a cada evento.</p>
             </br>
             <div class="contenedor">
                 <a href="/static/images/QRs/{{ record['qr'] }}" download="record['qr']">
@@ -49,8 +49,8 @@
             
             <div class="row g-3">
                 <input type="email" class="form-control" placeholder="Correo electrónico" aria-label="Correo electrónico" id="email" name="email" required value="{{ record.email }}" onblur="BuscarCorreo()">
-                <p class="h6" style="color:#6c757d;font-size:13px">Si se ha registrado previamente para otros eventos, podrá importar sus datos con el correo electrónico previamente registrado.</p>
-                <p class="h6" style="color:#6c757d;font-size:13px">Por favor actualice los datos en caso ser necesario.</p>
+                <p class="h6" style="color:#6c757d;font-size:13px">Si en el pasado se ha registrado para en eventos de la Dirección de Relaciones Internacionales, podrá importar sus datos con el correo electrónico previamente registrado.</p>
+                <p class="h6" style="color:#6c757d;font-size:13px">Por favor revise y actualice sus datos en caso ser necesario.</p>
                 <div style="margin-bottom: 10px;"></div>
                 
                 <select class="form-select form-select-md" aria-label="Tipo de documento de identida" name="tipos_documento" id="tipos_documento">
