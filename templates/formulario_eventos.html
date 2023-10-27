@@ -35,7 +35,7 @@
     
     <form action="/registro_eventos" method="POST" id="registro_eventos"> 
         
-        <div class="form-section bg-body-tertiary p-5 rounded">
+        <div class="form-section bg-body-tertiary p-3 rounded">
             <p class="h5">Selecciona el/los eventos a los que desea inscribirse:</p></br>
             <div style="margin-bottom: 5px;"></div>
             <p class="h6" style="color:#6c757d;font-size:13px">
@@ -43,8 +43,9 @@
                     
             {% include "eventos.html" %}
         </div>
-        </br>
-        <div class="form-section bg-body-tertiary p-5 rounded">
+        <img src="/static/DPEP_line_vc.png" class="img-fluid" alt="Banner">
+        <div class="form-section bg-body-tertiary p-3 rounded">
+            
             <p class="h5">Datos personales:</p></br>
             
             <div class="row g-3">
@@ -109,6 +110,7 @@
         </br><div class="col-12">
             <input type="submit" id="enviar" name="enviar" value="Enviar" class="btn btn-secondary"/>
         </div>
+        <img src="/static/DPEP_line_vc.png" class="img-fluid" alt="Banner">
     
     <script src="/static/js/buscar_correo.js"></script>
     <script src="/static/js/validaciones.js"></script>
