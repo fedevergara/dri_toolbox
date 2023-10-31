@@ -1,8 +1,10 @@
 from utils.listas import tipos_documento, paises, vinculos, unidades, sedes
 from flask import Flask, request, render_template
 from utils.actualizacion_eventos import actualizar_eventos
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from pymongo import MongoClient, DESCENDING
 from utils.send_email import enviar_correo
+from app_dash import app as dash_app
 from bson.objectid import ObjectId
 from time import time
 import qrcode
@@ -267,6 +269,11 @@ def registro_asistencia():
                            eventos=eventos_enviar)
 
 
+@app.route('/DPEP/indicadores_registros')
+def dash():
+    return dash_app.index()
+
+
 # Errors handlers
 # Invalid URL
 @app.errorhandler(404)
@@ -284,4 +291,5 @@ def internal_server_error(e):
 
 
 if __name__ == "__main__":
+    application = DispatcherMiddleware(app, {'/DPEP/indicadores_registros': dash_app.server})
     app.run(host="0.0.0.0", port=8001, debug=True)
