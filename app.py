@@ -162,7 +162,6 @@ def registro_eventos():
             else:
                 form_success = True
 
-
     # Enviar correo electrónico con el código QR
     if form_success:
         dehydrated_record = {
@@ -185,7 +184,7 @@ def registro_eventos():
         # Insertar el documento en la colección de MongoDB
         record['qr'] = QR
         collection.insert_one(record)
-        
+
         del record['_id']
         del record['registro']
 
@@ -225,7 +224,6 @@ def registro_asistencia():
             evento_json = json.loads(json_text)
             evento_registrado = evento_json['dia'] + " | " + evento_json['evento']
 
-
         except Exception as e:
             print("Error al cargar los datos:", e)
 
@@ -242,7 +240,7 @@ def registro_asistencia():
 
             # Accede a la cámara y captura información del QR (implementación necesaria)
             # Verifica y almacena el registro en MongoDB
-            
+
             existing_record = collection_assistants.find_one({
                 "email": registro['email'],
                 "numero_documento_identidad": registro['numero_documento_identidad'],
@@ -256,7 +254,7 @@ def registro_asistencia():
                 print("Registro exitoso.")
             else:
                 print("Ya se encuentra registrada la asistencia.")
-    
+
     eventos_enviar = []
     for evento_ in registros_eventos:
         e = {
@@ -271,7 +269,6 @@ def registro_asistencia():
 
 # Errors handlers
 # Invalid URL
-
 @app.errorhandler(404)
 def page_not_found(e):
     print(e)

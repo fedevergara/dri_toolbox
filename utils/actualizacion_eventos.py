@@ -65,7 +65,6 @@ def actualizar_eventos():
                 events_names.append(event_name)
                 events_ecards.append(event_ecard)
 
-
             return events_days, events_names, events_ecards
 
         except requests.exceptions.RequestException as e:

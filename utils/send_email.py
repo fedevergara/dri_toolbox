@@ -67,7 +67,7 @@ def enviar_correo(enviar_a, asunto, registro, qr_url, eventos):
                 _eventos = "● " + evento
             else:
                 _eventos = _eventos + "<br>" + "● " + evento
-    
+
     html = registro_ok(_eventos)
 
     if registro and qr_url:
