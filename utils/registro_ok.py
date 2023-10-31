@@ -21,3 +21,4 @@ def registro_ok(eventos):
         </html>
         """
     return html
+git status
