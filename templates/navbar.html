@@ -9,14 +9,23 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Inicio</a>
           
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Indicadores
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="http://127.0.0.1:8002/DPEP/indicadores_registros">Indicadores DPEP</a></li>
+            </ul>
+          </li>
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Informes
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Academia Glocal</a></li>
-              <li><a class="dropdown-item" href="#">Convenios próximos a vencer</a></li>
-              <li><a class="dropdown-item" href="#">Movilidad Internacional</a></li>
+              <li><a class="dropdown-item disabled" href="#">Academia Glocal</a></li>
+              <li><a class="dropdown-item disabled" href="#">Convenios próximos a vencer</a></li>
+              <li><a class="dropdown-item disabled" href="#">Movilidad Internacional</a></li>
             </ul>
           </li>
 
@@ -26,8 +35,8 @@
             </a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{{ url_for('registro_eventos') }}">Asistencia a eventos</a></li>
-              <li><a class="dropdown-item" href="#">Cartas de invitación</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('registro_movilidad') }}">Registro de Movilidad</a></li>
+              <li><a class="dropdown-item disabled" href="#">Cartas de invitación</a></li>
+              <li><a class="dropdown-item disabled" href="{{ url_for('registro_movilidad') }}">Registro de Movilidad</a></li>
             </ul>
           </li>
 

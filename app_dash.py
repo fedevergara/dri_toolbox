@@ -10,7 +10,7 @@ events = "events"
 assistants = "assistants"
 
 
-def actualizar_eventos(db_uri, db_name, events):
+def actualizar_eventos(db_uri, db_name, events, url_base_pathname='/DPEP/indicadores_registros'):
     dbclient = MongoClient(db_uri)
     db = dbclient[db_name]
 
@@ -133,4 +133,4 @@ def make_graphs(dia_escogido):
 
 
 if __name__ == '__main__':
-    app.run_server(port=8002, debug=True)
+    app.run_server(host="0.0.0.0", port=8002, debug=True)
