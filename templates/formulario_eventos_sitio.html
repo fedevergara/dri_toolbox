@@ -4,20 +4,7 @@
             <h1>Registro enviado</h1>
             <p class="lead">Muchas gracias por la información.</p>
             </br>
-            <p class="lead" style="color:#4c5155;font-size:16px">El QR a continuación es válido para confirmar su asistencia a los eventos a los que se haya registrado, otra copia del QR también le llegará al correo electrónico registrado: {{ record['email'] }}. </p>
-            </br>
-            <p class="lead" style="color:#4c5155;font-size:15px">Por favor recuerde presentar este QR en la entrada a cada evento.</p>
-            </br>
-            <div class="contenedor">
-                <a href="/static/images/QRs/{{ record['qr'] }}" download="record['qr']">
-                    <button type="button" class="btn btn-success">Descargar QR</button>
-                </a>
-            </div></br>
-            <div class="contenedor">
-                <img src="/static/images/QRs/{{ record['qr'] }}" class="img-fluid" alt="qr">
-            </div>
-        </div></br>
-        <a href="{{ url_for('registro_eventos') }}" class="btn btn-secondary" role="button" aria-disabled="true">Realizar un nuevo registro</a>
+        <a href="{{ url_for('registro_eventos_sitio') }}" class="btn btn-secondary" role="button" aria-disabled="true">Realizar un nuevo registro</a>
         </br></br></br>
     </main>
 
@@ -28,22 +15,25 @@
     </div>
     {% endif %}
     <div class="bg-body-tertiary p-3 rounded">
-        Registro Eventos DRI 2023 Presenciales.
+        Registro de asistencia en sitio - Eventos DRI 2023.
         </br></br>
         Gracias por registrarte a los eventos organizados desde la Dirección de Relaciones Internacionales de la Universidad de Antioquia. 
     </div></br>
     
-    <form action="/registro_eventos" method="POST" id="registro_eventos"> 
+    <form action="/registro_eventos_sitio" method="POST" id="registro_eventos"> 
         
         <div class="form-section bg-body-tertiary p-3 rounded">
             <p class="h5">Selecciona el/los eventos a los que desea inscribirse:</p></br>
-            <div style="margin-bottom: 5px;"></div>
-            <p class="h6" style="color:#6c757d;font-size:13px">
-                Con el ícono <img src="/static/images/icons/info-circle-fill.svg" alt="Bootstrap" width="16" height="16"> podrás ver los detalles del evento.<div style="margin-bottom: 10px;"></div>
-                    
-            {% include "eventos.html" %}
+            <div class="bg-body-tertiary p-3 rounded">
+                <select class="form-select form-select-md" aria-label="Small select example" name="evento_" id="eventos_disponibles">
+                    <option selected>Eventos disponibles</option>
+                    {% for evento in eventos %}
+                        <option value="{{ evento }}">{{ evento }}</option>
+                    {% endfor %}
+                  </select>
+                </div></br></br>    
         </div>
-        <img src="/static/DPEP_line_v.png" class="img-fluid" alt="Banner">
+        <img src="/static/DPEP_line_a.png" class="img-fluid" alt="Banner">
         <div class="form-section bg-body-tertiary p-3 rounded">
             
             <p class="h5">Datos personales:</p></br>
@@ -110,7 +100,7 @@
         </br><div class="col-12">
             <input type="submit" id="enviar" name="enviar" value="Enviar" class="btn btn-secondary"/>
         </div>
-        <img src="/static/DPEP_line_v.png" class="img-fluid" alt="Banner">
+        <img src="/static/DPEP_line_a.png" class="img-fluid" alt="Banner">
     
     <script src="/static/js/buscar_correo.js"></script>
     <script src="/static/js/validaciones.js"></script>

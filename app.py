@@ -16,11 +16,13 @@ db_uri = "mongodb://localhost:27017/"
 db_name = "international"
 events_collection = "events"
 assistants_collection = "assistants"
+confirmation_collection = "confirmation"
 
 dbclient = MongoClient(db_uri)
 db = dbclient[db_name]
 events = db[events_collection]
 assistants = db[assistants_collection]
+confirmation = db[confirmation_collection]
 
 # Create Flask instance
 server = Flask(__name__)
@@ -79,8 +81,20 @@ def buscar_correo():
     document = events.find_one({'email': email},
                                sort=[('_id', DESCENDING)])
 
-    response = json.dumps(document, default=str, ensure_ascii=False)
-    return response
+    if document:
+        print("Registro encontrado en la colección de registro a eventos.")
+        response = json.dumps(document, default=str, ensure_ascii=False)
+        return response
+
+    else:
+        document = confirmation.find_one({'email': email},
+                                        sort=[('_id', DESCENDING)])
+        if document:
+            print("Registro encontrado en la colección de asistencias históricas.")
+            response = json.dumps(document, default=str, ensure_ascii=False)
+            return response
+    
+    return None
 
 
 @server.route('/registro_eventos', methods=['GET', 'POST'])
@@ -215,11 +229,122 @@ def registro_eventos():
     )
 
 
+@server.route('/registro_eventos_sitio', methods=['GET', 'POST'])
+def registro_eventos_sitio():
+    record = None
+    error = None
+    form_success = False
+
+    eventos_enviar = []
+    for evento_ in registros_eventos:
+        e = {
+            "dia": evento_['dia'],
+            "evento": evento_['evento']
+        }
+        eventos_enviar.append(e)
+
+    if request.method == 'POST':
+        email = request.form['email'].lower()
+        documento_identidad = request.form['documento']
+        data_evento = request.form['evento_']
+        json_text = data_evento.replace("'", "\"")
+        evento_json = json.loads(json_text)
+        evento = evento_json['dia'] + " | " + evento_json['evento']
+
+
+        # Añade una verificación para evitar registros duplicados basados en correo y eventos
+        existing_record = confirmation.find_one({
+            "email": email,
+            "evento": evento,
+            "numero_documento_identidad": documento_identidad
+        })
+
+        if existing_record:
+            error = "Ya existe un registro para el evento seleccionado con este correo electrónico y número de documento."
+
+        else:
+            tipo_documento = request.form['tipos_documento']
+            nombres = request.form['nombres'].strip().title()
+            apellidos = request.form['apellidos'].strip().title()
+            pais = request.form['pais']
+            ciudad = request.form['ciudad'].strip().title()
+            entidad = request.form['entidad'].strip().title()
+            vinculo = request.form['vinculo']
+            unidad = request.form['unidad'] if vinculo != "Externo" else "N/A"
+            programa = request.form['programa'].strip().title() if vinculo != "Externo" else "N/A"
+            sede = request.form['sede'] if vinculo != "Externo" else "N/A"
+
+            record = {
+                '_id': ObjectId(),
+                "registro": int(time()),
+                "evento": evento,
+                "email": email,
+                "tipo_documento_identidad": tipo_documento,
+                "numero_documento_identidad": documento_identidad,
+                "nombres": nombres,
+                "apellidos": apellidos,
+                "pais": pais,
+                "ciudad": ciudad,
+                "entidad": entidad,
+                "vinculo": vinculo,
+                "unidad": unidad,
+                "programa": programa,
+                "sede": sede,
+            }
+
+            # Realiza todas las verificaciones
+            if not evento:
+                error = "Por favor, seleccione al menos un evento."
+            elif tipo_documento not in tipos_documento:
+                error = "Por favor, seleccione un tipo de documento."
+            elif pais not in paises:
+                error = "Por favor, seleccione un país."
+            elif vinculo not in vinculos:
+                error = "Por favor, seleccione un vínculo."
+            elif unidad == "Unidad Académica/Administrativa:" and vinculo != "Externo":
+                error = "Por favor, seleccione una dependencia."
+            elif sede == "Campus de origen:" and vinculo != "Externo":
+                error = "Por favor, seleccione un campus."
+
+            if error:
+                # Devuelve el formulario con el mensaje de error y los valores ingresados
+                return render_template(
+                    'registro_eventos_sitio.html',
+                    eventos=eventos_enviar,
+                    tipos_documento=tipos_documento,
+                    paises=paises, vinculos=vinculos,
+                    unidades=unidades,
+                    sedes=sedes,
+                    record=record,
+                    error=error
+                )
+
+            else:
+                form_success = True
+                confirmation.insert_one(record)
+
+
+    # Renderiza el formulario sin errores
+    return render_template(
+        'registro_eventos_sitio.html',
+        eventos=eventos_enviar,
+        tipos_documento=tipos_documento,
+        paises=paises,
+        vinculos=vinculos,
+        unidades=unidades,
+        sedes=sedes,
+        record=record,
+        error=error,
+        form_success=form_success
+    )
+
+
 @server.route('/registro_asistencia', methods=['GET', 'POST'])
 def registro_asistencia():
     registro = None
 
     type_ = request.content_type
+
     if type_ == "application/json":
         try:
             data = request.json
@@ -244,9 +369,6 @@ def registro_asistencia():
                 "evento": evento_registrado,
             }
 
-            # Accede a la cámara y captura información del QR (implementación necesaria)
-            # Verifica y almacena el registro en MongoDB
-
             existing_record = assistants.find_one({
                 "email": registro['email'],
                 "numero_documento_identidad": registro['numero_documento_identidad'],
@@ -257,7 +379,33 @@ def registro_asistencia():
 
             if not existing_record:
                 assistants.insert_one(record)
-                print("Registro exitoso.")
+                print("Registro exitoso!")
+                
+                email = record['email']
+                evento = record['evento']
+                numero_documento_identidad = record['numero_documento_identidad']
+
+                registrado = events.find({"email": email, "eventos": {"$in": [evento]}, "numero_documento_identidad": numero_documento_identidad})[0]
+                
+                record_confirmed = {
+                    '_id': ObjectId(),
+                    "registro": int(time()),
+                    "evento": evento,
+                    "email": email,
+                    "tipo_documento_identidad": registrado['tipo_documento_identidad'],
+                    "numero_documento_identidad": numero_documento_identidad,
+                    "nombres": registrado['nombres'],
+                    "apellidos": registrado['apellidos'],
+                    "pais": registrado['pais'],
+                    "ciudad": registrado['ciudad'],
+                    "entidad": registrado['entidad'],
+                    "vinculo": registrado['vinculo'],
+                    "unidad": registrado['unidad'],
+                    "programa": registrado['programa'],
+                    "sede": registrado['sede'],
+                }
+                confirmation.insert_one(record_confirmed)
+
             else:
                 print("Ya se encuentra registrada la asistencia.")
 
@@ -273,10 +421,7 @@ def registro_asistencia():
                            eventos=eventos_enviar)
 
 
-# app = Dash(server=server, routes_pathname_prefix="/dash/")
-# app.layout = create_app()
-
-# Aplicación Dash
+# Aplicación Dash -------------------------------------------------------------
 
 def actualizacion_eventos(events):
     datos_events = list(events.find())
@@ -409,4 +554,4 @@ def internal_server_error(e):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8001)
+    app.run(host="0.0.0.0", port=8001, debug=True)
