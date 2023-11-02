@@ -120,9 +120,10 @@ def buscar_correo():
                 }
                 print("Registro encontrado en la colección de eventos históricos de la DRI.")
                 response = json.dumps(record, default=str, ensure_ascii=False)
-                return record
+                return response
     
-    return None
+    response = json.dumps(document, default=str, ensure_ascii=False)
+    return response
 
 
 @server.route('/registro_eventos', methods=['GET', 'POST'])
