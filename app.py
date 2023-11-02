@@ -17,12 +17,14 @@ db_name = "international"
 events_collection = "events"
 assistants_collection = "assistants"
 confirmation_collection = "confirmation"
+registros_eventos_dri_collection="registros_eventos_dri"
 
 dbclient = MongoClient(db_uri)
 db = dbclient[db_name]
 events = db[events_collection]
 assistants = db[assistants_collection]
 confirmation = db[confirmation_collection]
+registros_eventos_dri = db[registros_eventos_dri_collection]
 
 # Create Flask instance
 server = Flask(__name__)
@@ -78,6 +80,7 @@ def registro_movilidad():
 @server.route('/buscar_correo')
 def buscar_correo():
     email = request.args.get('email')
+    # events
     document = events.find_one({'email': email},
                                sort=[('_id', DESCENDING)])
 
@@ -87,12 +90,37 @@ def buscar_correo():
         return response
 
     else:
+        # confirmations
         document = confirmation.find_one({'email': email},
                                         sort=[('_id', DESCENDING)])
         if document:
-            print("Registro encontrado en la colección de asistencias históricas.")
+            print("Registro encontrado en la colección de asistencias.")
             response = json.dumps(document, default=str, ensure_ascii=False)
             return response
+
+        else:
+            # historical events
+            document = registros_eventos_dri.find_one({'email': email},
+                                                    sort=[('_id', DESCENDING)])
+                
+            if document:
+                record = {
+                    "email": document['email'],
+                    "tipo_documento_identidad": document['tipo_documento_identidad'],
+                    "numero_documento_identidad": document['numero_documento_identidad'],
+                    "nombres": document['nombres'],
+                    "apellidos": document['apellidos'],
+                    "pais": document['pais'],
+                    "ciudad": document['ciudad'],
+                    "entidad": document['entidad'],
+                    "vinculo": document['vinculo'],
+                    "unidad": document['unidad'],
+                    "programa": document['programa'],
+                    "sede": document['sede'],
+                }
+                print("Registro encontrado en la colección de eventos históricos de la DRI.")
+                response = json.dumps(record, default=str, ensure_ascii=False)
+                return record
     
     return None
 
