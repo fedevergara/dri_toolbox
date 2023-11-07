@@ -497,7 +497,7 @@ app = Dash(server=server, routes_pathname_prefix="/dash/")
 df = crear_dataframe(actualizacion_eventos(events))
 
 app.layout = html.Div([
-    html.H1("Conteo de registros - eventos de De País en País Centroamérica y el Caribe",
+    html.H1("Conteo de inscripciones - eventos 'De País en País Centroamérica y el Caribe'",
             style={"textAlign": "center"}),
     html.Hr(),
     html.Div(id="bar-div", children=[]),
@@ -541,7 +541,7 @@ def make_graphs(dia_escogido):
     )
 
     fig_bar.update_traces(marker=dict(line=dict(width=1)))
-    fig_bar.update_xaxes(dtick=1)
+    fig_bar.update_xaxes(dtick=10)
 
     # HISTOGRAM
     df_hist_ = df[df["dia"] == dia_escogido]
@@ -549,7 +549,7 @@ def make_graphs(dia_escogido):
         'dia', 'evento', 'vinculo'], aggfunc='count').reset_index().sort_values(by='email', ascending=False)
     fig_hist = px.bar(df_hist, x='email', y="evento",
                       color="vinculo", text="email")
-    fig_hist.update_xaxes(dtick=1)
+    fig_hist.update_xaxes(dtick=5)
     fig_hist.update_layout(
         title="Asistentes por Vínculo a eventos del día {}".format(
             dia_escogido),
