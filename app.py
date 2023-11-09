@@ -535,13 +535,13 @@ def make_graphs(dia_escogido):
     fig_bar = px.bar(df_bar, x="total_asistentes", y="vinculo",
                      color="vinculo", text="total_asistentes")
     fig_bar.update_layout(
-        title="Total de Asistentes por Vínculo",
-        xaxis_title="Número de Asistentes",
+        title="Total de Inscripciones por Vínculo",
+        xaxis_title="Número de Inscritos",
         yaxis_title="Vínculo",
     )
 
     fig_bar.update_traces(marker=dict(line=dict(width=1)))
-    fig_bar.update_xaxes(dtick=10)
+    fig_bar.update_xaxes(dtick=25)
 
     # HISTOGRAM
     df_hist_ = df[df["dia"] == dia_escogido]
@@ -551,9 +551,9 @@ def make_graphs(dia_escogido):
                       color="vinculo", text="email")
     fig_hist.update_xaxes(dtick=5)
     fig_hist.update_layout(
-        title="Asistentes por Vínculo a eventos del día {}".format(
+        title="Inscritos por Vínculo a eventos del día {}".format(
             dia_escogido),
-        xaxis_title="Número de Asistentes",
+        xaxis_title="Número de Inscritos",
         yaxis_title="Vínculo",
     )
 
