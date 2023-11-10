@@ -17,7 +17,8 @@ db_name = "international"
 events_collection = "events"
 assistants_collection = "assistants"
 confirmation_collection = "confirmation"
-registros_eventos_dri_collection="registros_eventos_dri"
+registros_eventos_dri_collection = "registros_eventos_dri"
+evaluations_collection = "evaluations"
 
 dbclient = MongoClient(db_uri)
 db = dbclient[db_name]
@@ -25,6 +26,7 @@ events = db[events_collection]
 assistants = db[assistants_collection]
 confirmation = db[confirmation_collection]
 registros_eventos_dri = db[registros_eventos_dri_collection]
+evaluations = db[evaluations_collection]
 
 # Create Flask instance
 server = Flask(__name__)
@@ -367,6 +369,60 @@ def registro_eventos_sitio():
         form_success=form_success
     )
 
+@server.route('/registro_evaluacion', methods=['GET', 'POST'])
+def registro_evaluacion():
+    record = None
+    form_success = False
+    error = None
+
+    eventos_enviar = []
+    for evento_ in registros_eventos:
+        e = {
+            "dia": evento_['dia'],
+            "evento": evento_['evento']
+        }
+        eventos_enviar.append(e)
+
+
+    if request.method == 'POST':
+        data_evento = request.form['evento_']
+        if data_evento == "Eventos disponibles":
+            error = "Por favor, seleccione un evento."
+            return render_template(
+                'registro_evaluacion.html',
+                eventos=eventos_enviar,
+                record=record,
+                error=error
+            )
+        json_text = data_evento.replace("'", "\"")
+        evento_json = json.loads(json_text)
+        evento = evento_json['dia'] + " | " + evento_json['evento']
+
+        pregunta_1 = request.form['pregunta1']
+        pregunta_2 = request.form['pregunta2']
+        pregunta_3 = request.form['pregunta3']
+        pregunta_4 = request.form['pregunta4']
+
+        record = {
+            '_id': ObjectId(),
+            "registro": int(time()),
+            "evento": evento,
+            "pregunta_1": pregunta_1,
+            "pregunta_2": pregunta_2,
+            "pregunta_3": pregunta_3,
+            "pregunta_4": pregunta_4,
+        }
+
+        print(record)
+        evaluations.insert_one(record)
+        form_success = True
+    
+
+    return render_template("registro_evaluacion.html",
+                           record=record,
+                           error=error,
+                           form_success=form_success,
+                           eventos=eventos_enviar)
 
 @server.route('/registro_asistencia', methods=['GET', 'POST'])
 def registro_asistencia():
@@ -579,8 +635,8 @@ def page_not_found(e):
 @server.errorhandler(500)
 def internal_server_error(e):
     print(e)
-    return render_template("505.html"), 500
+    return render_template("500.html"), 500
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8001)
+    app.run(host="0.0.0.0", port=8001, debug=True)

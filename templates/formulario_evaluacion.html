@@ -1,0 +1,155 @@
+{% if form_success %}
+    <main class="container">
+        <div class="form-section bg-body-tertiary p-5 rounded">
+            <h1>Registro enviado</h1>
+            <p class="lead">Muchas gracias por la información.</p>
+            </br>
+        <a href="{{ url_for('registro_evaluacion') }}" class="btn btn-secondary" role="button" aria-disabled="true">Realizar una nueva evaluación</a>
+        </br></br></br>
+    </main>
+
+{% else %}    
+    {% if error %}
+    </br><div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="bg-body-tertiary p-3 rounded">
+        <p class="h6">Registro de evaluación de eventos presenciales - Eventos DRI 2023.</p>
+        </br>
+        <p>Queremos agradecerles su participación en programa institucional De País en País: Centroamérica y el Caribe 2023. Su presencia en el desarrollo de la agenda académica,  nos trazó la ruta de reflexión y análisis de las realidades de la región, además nos aseguró el éxito del evento y algunos logros ya identificados que esperamos seguir referenciando y potencializando.</p> 
+
+        <p>Llegó la hora de evaluarnos y de revisar aquellos aspectos claves del evento y fortalecer nuestros procesos de mejora continua. Para tal efecto, hemos diseñado una encuesta que esperamos nos apoyen respondiendo.</p>
+    </div></br>
+    
+    <form action="/registro_evaluacion" method="POST" id="registro_evaluacion"> 
+        
+        <div class="form-section bg-body-tertiary p-3 rounded">
+            <p class="h5">Seleccione el evento en el que se encuentra:</p></br>
+            <div class="bg-body-tertiary p-3 rounded">
+                <select class="form-select form-select-md" aria-label="Small select example" name="evento_" id="eventos_disponibles" required>
+                    <option selected>Eventos disponibles</option>
+                    {% for evento in eventos %}
+                        <option value="{{ evento }}">{{ evento }}</option>
+                    {% endfor %}
+                  </select>
+                </div></br></br>    
+        </div>
+        <img src="/static/DPEP_line_vc.png" class="img-fluid" alt="Banner">
+        <div class="form-section bg-body-tertiary p-3 rounded">
+            
+            <p class="h5">Evaluación:</p></br>
+            
+            <div class="bg-body-tertiary p-3 rounded">
+                <p class="h6">En una escala de 1 a 5, siendo 1 (muy bajo), 2 (bajo), 3 (medio), 4 (alto) y 5 (muy alto), ¿cómo califica los siguientes aspectos?:</p>
+                </br>
+            </div>
+            
+            <div class="bg-body-tertiary p-3 rounded">
+                <p class="h7">1. ¿La actividad académica en la que usted participó le permitió fortalecer las competencias propias de un ciudadano global, tales como interculturalidad, plurilingüismo, ciudadanía y/o cosmopolitica?</p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1_1" value="1" required>
+                    <label class="form-check-label" for="pregunta1_1">1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1_2" value="2" required>
+                    <label class="form-check-label" for="pregunta1_2">2</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1_3" value="3" required>
+                    <label class="form-check-label" for="pregunta1_3">3</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1_4" value="4" required>
+                    <label class="form-check-label" for="pregunta1_4">4</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta1" id="pregunta1_5" value="5" required>
+                    <label class="form-check-label" for="pregunta1_5">5</label>
+                </div>
+            </div>
+
+            <div class="bg-body-tertiary p-3 rounded">
+                <p class="h7">2. ¿La actividad en la que usted participó le permitió conocer, aprender, acercarse o generar algún tipo de interacción con otras culturas y contextos locales, nacionales e internacionales?</p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta2" id="pregunta2_1" value="1" required>
+                    <label class="form-check-label" for="pregunta2_1">1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta2" id="pregunta2_2" value="2" required>
+                    <label class="form-check-label" for="pregunta2_2">2</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta2" id="pregunta2_3" value="3" required>
+                    <label class="form-check-label" for="pregunta2_3">3</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta2" id="pregunta2_4" value="4" required>
+                    <label class="form-check-label" for="pregunta2_4">4</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta2" id="pregunta2_5" value="5" required>
+                    <label class="form-check-label" for="pregunta2_5">5</label>
+                </div>
+            </div>
+
+            <div class="bg-body-tertiary p-3 rounded">
+                <p class="h7">3. ¿La actividad en la que usted participó le permite desarrollar capacidades para articularse con pares nacionales e internacionales en torno a la temática tratada?</p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta3" id="pregunta3_1" value="1" required>
+                    <label class="form-check-label" for="pregunta3_1">1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta3" id="pregunta3_2" value="2" required>
+                    <label class="form-check-label" for="pregunta3_2">2</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta3" id="pregunta3_3" value="3" required>
+                    <label class="form-check-label" for="pregunta3_3">3</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta3" id="pregunta3_4" value="4" required>
+                    <label class="form-check-label" for="pregunta3_4">4</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta3" id="pregunta3_5" value="5" required>
+                    <label class="form-check-label" for="pregunta3_5">5</label>
+                </div>
+            </div>
+
+            <div class="bg-body-tertiary p-3 rounded">
+                <p class="h7">¿4. ¿En términos generales, cómo evalúa los aspectos organizativos de este espacio académico? (difusión, locación, logística, entre otros)?</p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta4" id="pregunta4_1" value="1" required>
+                    <label class="form-check-label" for="pregunta4_1">1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta4" id="pregunta4_2" value="2" required>
+                    <label class="form-check-label" for="pregunta4_2">2</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta4" id="pregunta4_3" value="3" required>
+                    <label class="form-check-label" for="pregunta4_3">3</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta4" id="pregunta4_4" value="4" required>
+                    <label class="form-check-label" for="pregunta4_4">4</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pregunta4" id="pregunta4_5" value="5" required>
+                    <label class="form-check-label" for="pregunta4_5">5</label>
+                </div>
+            </div>
+            
+
+        </br><div class="col-12">
+            <input type="submit" id="enviar" name="enviar" value="Enviar" class="btn btn-secondary"/>
+        </div>
+        <img src="/static/DPEP_line_vc.png" class="img-fluid" alt="Banner">
+    
+    <script src="/static/js/buscar_correo.js"></script>
+    <script src="/static/js/validaciones.js"></script>
+
+    </form></br></br>
+
+{% endif %}
