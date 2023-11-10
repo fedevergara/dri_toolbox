@@ -156,10 +156,23 @@ def registro_eventos():
             pais = request.form['pais']
             ciudad = request.form['ciudad'].strip().title()
             entidad = request.form['entidad'].strip().title()
-            vinculo = request.form['vinculo']
+            try:
+                vinculo = request.form['vinculo']
+            except:
+                error = "Por favor, seleccione un vínculo."
+                return render_template(
+                    'registro_eventos.html',
+                    eventos=eventos_por_dia,
+                    tipos_documento=tipos_documento,
+                    paises=paises,
+                    vinculos=vinculos,
+                    unidades=unidades,
+                    sedes=sedes,
+                    record=record,
+                    error=error)
+            
             unidad = request.form['unidad'] if vinculo != "Externo" else "N/A"
-            programa = request.form['programa'].strip(
-            ).title() if vinculo != "Externo" else "N/A"
+            programa = request.form['programa'].strip().title() if vinculo != "Externo" else "N/A"
             sede = request.form['sede'] if vinculo != "Externo" else "N/A"
 
             record = {
@@ -639,4 +652,4 @@ def internal_server_error(e):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8001, debug=True)
+    app.run(host="0.0.0.0", port=8001)

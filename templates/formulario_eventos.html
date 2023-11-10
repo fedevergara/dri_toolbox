@@ -82,7 +82,7 @@
                 
                 <div style="margin-bottom: 10px;"></div>
                 <p class="h6" style="color:#6c757d;font-size:13px">En caso de no tener vínculo con la Universidad de Antioquia, favor seleccionar la opción "Externo".</p>
-                <select class="form-select form-select-md" aria-label="Vínculo con la Universidad de Antioquia" name="vinculo" id="vinculo"  onblur="Vinculo()">
+                <select class="form-select form-select-md" aria-label="Vínculo con la Universidad de Antioquia" name="vinculo" id="vinculo" onblur="Vinculo()">
                     <option selected>Vínculo con la Universidad de Antioquia:</option>
                         {% for vinculo in vinculos %}
                         <option value="{{ vinculo }}" {% if vinculo == record.vinculo %} selected {% endif %}>{{ vinculo }}</option>
