@@ -290,7 +290,7 @@ def registro_eventos_sitio():
     if request.method == 'POST':
         email = request.form['email'].lower()
         documento_identidad = request.form['documento']
-        data_evento = request.form['evento_']
+        data_evento = request.form['evento_'].replace(u'\xa0', u' ')
         if data_evento == "Eventos disponibles":
             error = "Por favor, seleccione un evento."
             return render_template(
