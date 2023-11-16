@@ -300,7 +300,18 @@ def registro_eventos_sitio():
                 error=error
             )
         json_text = data_evento.replace("'", "\"")
-        evento_json = json.loads(json_text)
+        print(json_text)
+        try:
+            evento_json = json.loads(json_text)
+        except Exception as e:
+            error = e
+            print(e)
+            return render_template(
+                'registro_eventos_sitio.html',
+                eventos=eventos_enviar,
+                record=record
+            )
+        
         evento = evento_json['dia'] + " | " + evento_json['evento']
 
 
