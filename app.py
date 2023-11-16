@@ -426,7 +426,7 @@ def registro_evaluacion():
                 record=record,
                 error=error
             )
-        json_text = data_evento.replace("'", "\"")
+        json_text = data_evento.replace("'", "\"").replace(u'\xa0', u' ')
         evento_json = json.loads(json_text)
         evento = evento_json['dia'] + " | " + evento_json['evento']
 
