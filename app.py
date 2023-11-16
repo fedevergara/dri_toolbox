@@ -291,6 +291,14 @@ def registro_eventos_sitio():
         email = request.form['email'].lower()
         documento_identidad = request.form['documento']
         data_evento = request.form['evento_']
+        if data_evento == "Eventos disponibles":
+            error = "Por favor, seleccione un evento."
+            return render_template(
+                'registro_eventos_sitio.html',
+                eventos=eventos_enviar,
+                record=record,
+                error=error
+            )
         json_text = data_evento.replace("'", "\"")
         evento_json = json.loads(json_text)
         evento = evento_json['dia'] + " | " + evento_json['evento']
